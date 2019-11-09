@@ -65,7 +65,7 @@ public class FiltersListFragment extends Fragment implements FiltersListFragment
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         int space = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
         recyclerView.addItemDecoration(new ItemDecoration(space));
-
+        recyclerView.setAdapter(adapter);
         displayThumbnail(null);
         return view;
     }
