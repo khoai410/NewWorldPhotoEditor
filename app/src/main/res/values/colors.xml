@@ -5,4 +5,8 @@
     <color name="colorAccent">#D81B60</color>
     <color name="mainColor">#FCA8B0</color>
     <color name="white_color">#fff</color>
+    <color name="tool_bg">#151414</color>
+    <color name="filter_color_selected">#221f20</color>
+    <color name="filter_color_unselected">#8a8889</color>
+    <color name="color_option_menu">#FF3990</color>
 </resources>

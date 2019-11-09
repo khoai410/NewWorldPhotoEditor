@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">New World Photo Editor</string>
-    <string name="slogan">Photo Editor Beauty is a powerful photo editor with many amazing effects and filters ! </string>
+    <string name="slogan">New World Photo Editor app bring to user a whole new world of photo with many effects and more... ! </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

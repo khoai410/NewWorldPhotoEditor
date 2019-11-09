@@ -20,10 +20,10 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
     private static final int GALLERY_RESULT = 1;
     private static final int CAMERA_RESULT = 2;
-    private static final String FILE_PROVIDER_AUTHORITY = "com.example.newworldphotoeditor";
-    private static final int CAMERA_PERMISSION_CODE = 99;
-    private static final int STORAGE_PERMISSION_CODE = 100 ;
-    private String mCaptureImage;
+//    private static final String FILE_PROVIDER_AUTHORITY = "com.example.newworldphotoeditor";
+//    private static final int CAMERA_PERMISSION_CODE = 99;
+//    private static final int STORAGE_PERMISSION_CODE = 100 ;
+//    private String mCaptureImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onCollage(View view) {
-
+        Intent intent = new Intent(MainActivity.this,CollageActivity.class);
+        startActivity(intent);
     }
 
     public void onCamera(View view) {
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onGallery(View view) {
-        Intent intent = new Intent();
+        Intent intent  = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALLERY_RESULT);
