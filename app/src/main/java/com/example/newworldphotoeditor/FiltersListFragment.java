@@ -19,6 +19,7 @@ import com.example.newworldphotoeditor.Adapter.ThumbnailAdapter;
 import com.example.newworldphotoeditor.Interface.FiltersListFragmentListener;
 import com.example.newworldphotoeditor.Ultis.BitmapUltis;
 import com.example.newworldphotoeditor.Ultis.ItemDecoration;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.zomato.photofilters.FilterPack;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.utils.ThumbnailItem;
@@ -31,12 +32,20 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FiltersListFragment extends Fragment implements FiltersListFragmentListener {
+public class FiltersListFragment extends BottomSheetDialogFragment implements FiltersListFragmentListener {
     RecyclerView recyclerView;
     ThumbnailAdapter adapter;
     List<ThumbnailItem> thumbnailItems;
 
     FiltersListFragmentListener listener;
+    //Singleton
+    static FiltersListFragment instance;
+    public static FiltersListFragment getInstance() {
+        if (instance == null)
+            instance = new FiltersListFragment();
+            return instance;
+
+    }
 
     public void setListener(FiltersListFragmentListener listener) {
         this.listener = listener;

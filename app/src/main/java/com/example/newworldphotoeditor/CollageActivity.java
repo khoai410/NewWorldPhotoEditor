@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewpager.widget.ViewPager;
 
@@ -38,18 +39,23 @@ import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubfilter;
 import java.io.IOException;
 import java.util.List;
 
+import ja.burhanrashid52.photoeditor.OnSaveBitmap;
+import ja.burhanrashid52.photoeditor.PhotoEditor;
+import ja.burhanrashid52.photoeditor.PhotoEditorView;
+
 public class CollageActivity extends AppCompatActivity implements FiltersListFragmentListener, EditImageFragmentListener {
     public static String pictureName ="test.jpg";
     public static final int PERMISSION_PICK_IMAGE = 1000;
-    ImageView imagePreview;
-    TabLayout tabLayout;
-    ViewPager viewPager;
+    PhotoEditorView photoEditorView;
+    PhotoEditor photoEditor;
     CoordinatorLayout coordinatorLayout;
     Bitmap ogBitmap;
     Bitmap filterBitmap;
     Bitmap lastBitmap;
     FiltersListFragment filtersListFragment;
     EditImageFragment editImageFragment;
+    CardView cv_filter;
+    CardView cv_tune;
     int brightness1 = 0;
     float saturation1 = 1.0f;
     float constraint1 = 1.0f;
@@ -67,15 +73,34 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         getSupportActionBar().setTitle("Filter");
 
         //View
-        imagePreview = findViewById(R.id.image_preview);
-        tabLayout = findViewById(R.id.tabs);
-        viewPager = findViewById(R.id.viewPager);
+        cv_filter = findViewById(R.id.cv_filter);
+        cv_tune = findViewById(R.id.cv_tune);
+
+        cv_filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FiltersListFragment filtersListFragment = FiltersListFragment.getInstance();
+                filtersListFragment.setListener(CollageActivity.this);
+                filtersListFragment.show(getSupportFragmentManager(),filtersListFragment.getTag());
+            }
+        });
+        cv_tune.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditImageFragment editImageFragment = EditImageFragment.getInstance();
+                editImageFragment.setListener(CollageActivity.this);
+                editImageFragment.show(getSupportFragmentManager(),editImageFragment.getTag());
+            }
+        });
+        photoEditorView = findViewById(R.id.image_preview);
+        photoEditor = new PhotoEditor.Builder(this, photoEditorView)
+                    .setPinchTextScalable(true)
+                    .build();
         coordinatorLayout = findViewById(R.id.coordinator);
 
         loadImage();
 
-        setupViewPager(viewPager);
-        tabLayout.setupWithViewPager(viewPager);
+
 
     }
 
@@ -83,7 +108,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         ogBitmap = BitmapUltis.getBitmapFromAssets(this, pictureName,300, 300);
         filterBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
         lastBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
-        imagePreview.setImageBitmap(ogBitmap);
+        photoEditorView.getSource().setImageBitmap(ogBitmap);
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -106,7 +131,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         brightness1 = brightness;
         Filter filter = new Filter();
         filter.addSubFilter(new BrightnessSubFilter(brightness));
-        imagePreview.setImageBitmap(filter.processFilter(lastBitmap.copy(Bitmap.Config.ARGB_8888,true)));
+        photoEditorView.getSource().setImageBitmap(filter.processFilter(lastBitmap.copy(Bitmap.Config.ARGB_8888,true)));
     }
 
     @Override
@@ -114,7 +139,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         saturation1 = saturation;
         Filter filter = new Filter();
         filter.addSubFilter(new SaturationSubfilter(saturation));
-        imagePreview.setImageBitmap(filter.processFilter(lastBitmap.copy(Bitmap.Config.ARGB_8888,true)));
+        photoEditorView.getSource().setImageBitmap(filter.processFilter(lastBitmap.copy(Bitmap.Config.ARGB_8888,true)));
     }
 
     @Override
@@ -122,7 +147,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         constraint1 = constraint;
         Filter filter = new Filter();
         filter.addSubFilter(new ContrastSubFilter(constraint));
-        imagePreview.setImageBitmap(filter.processFilter(lastBitmap.copy(Bitmap.Config.ARGB_8888,true)));
+        photoEditorView.getSource().setImageBitmap(filter.processFilter(lastBitmap.copy(Bitmap.Config.ARGB_8888,true)));
     }
 
     @Override
@@ -145,7 +170,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     public void onFiltersSelected(Filter filter) {
         reset();
         filterBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
-        imagePreview.setImageBitmap(filter.processFilter(filterBitmap));
+        photoEditorView.getSource().setImageBitmap(filter.processFilter(filterBitmap));
         lastBitmap = filterBitmap.copy(Bitmap.Config.ARGB_8888,true);
     }
 
@@ -185,25 +210,35 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
                         if(report.areAllPermissionsGranted()){
-                            try {
-                                final String path = BitmapUltis.insertImage(getContentResolver(),lastBitmap,System.currentTimeMillis() + "_profile.jpg",null);
+                            photoEditor.saveAsBitmap(new OnSaveBitmap() {
+                                @Override
+                                public void onBitmapReady(Bitmap saveBitmap) {
+                                    try {
+                                        final String path = BitmapUltis.insertImage(getContentResolver(),lastBitmap,System.currentTimeMillis() + "_profile.jpg",null);
 
-                                if(!TextUtils.isEmpty(path)){
-                                    Snackbar snackbar = Snackbar.make(coordinatorLayout, "Đã Save Vào Thư Viện Ảnh", Snackbar.LENGTH_LONG).setAction("OPEN", new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                             openImage(path);
+                                        if(!TextUtils.isEmpty(path)){
+                                            Snackbar snackbar = Snackbar.make(coordinatorLayout, "Đã Save Vào Thư Viện Ảnh", Snackbar.LENGTH_LONG).setAction("OPEN", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    openImage(path);
+                                                }
+                                            });
+                                            snackbar.show();
                                         }
-                                    });
-                                    snackbar.show();
+                                        else{
+                                            Snackbar snackbar = Snackbar.make(coordinatorLayout, "Không Save Được Ảnh Vào Thư Viện Ảnh", Snackbar.LENGTH_LONG);
+                                            snackbar.show();
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
-                                else{
-                                    Snackbar snackbar = Snackbar.make(coordinatorLayout, "Không Save Được Ảnh Vào Thư Viện Ảnh", Snackbar.LENGTH_LONG);
-                                    snackbar.show();
+
+                                @Override
+                                public void onFailure(Exception e) {
+
                                 }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                            });
                         }
                         else{
                             Toast.makeText(CollageActivity.this, "Chưa Cấp Permission",Toast.LENGTH_SHORT).show();
@@ -260,7 +295,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
             ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
             lastBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
             filterBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-            imagePreview.setImageBitmap(ogBitmap);
+            photoEditorView.getSource().setImageBitmap(ogBitmap);
             bitmap.recycle();
 
             filtersListFragment.displayThumbnail(ogBitmap);

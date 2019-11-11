@@ -12,17 +12,26 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 
 import com.example.newworldphotoeditor.Interface.EditImageFragmentListener;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EditImageFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
+public class EditImageFragment extends BottomSheetDialogFragment implements SeekBar.OnSeekBarChangeListener {
 
     private EditImageFragmentListener listener;
     SeekBar seekBar_brightness;
     SeekBar seekBar_saturation;
     SeekBar seekBar_constraint;
+
+    static EditImageFragment instance;
+
+    public static EditImageFragment getInstance(){
+        if(instance == null)
+            instance = new EditImageFragment();
+        return instance;
+    }
 
     public void setListener(EditImageFragmentListener listener) {
         this.listener = listener;
