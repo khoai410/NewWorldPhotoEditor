@@ -11,6 +11,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.example.newworldphotoeditor.Adapter.ViewPagerAdapter;
 import com.example.newworldphotoeditor.Interface.BrushFragmentListener;
 import com.example.newworldphotoeditor.Interface.EditImageFragmentListener;
+import com.example.newworldphotoeditor.Interface.EmojiFragmentListener;
 import com.example.newworldphotoeditor.Interface.FiltersListFragmentListener;
 import com.example.newworldphotoeditor.Ultis.BitmapUltis;
 import com.google.android.material.snackbar.Snackbar;
@@ -42,7 +44,7 @@ import ja.burhanrashid52.photoeditor.OnSaveBitmap;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 
-public class CollageActivity extends AppCompatActivity implements FiltersListFragmentListener, EditImageFragmentListener, BrushFragmentListener {
+public class CollageActivity extends AppCompatActivity implements FiltersListFragmentListener, EditImageFragmentListener, BrushFragmentListener, EmojiFragmentListener {
     public static String pictureName ="test.jpg";
     public static final int PERMISSION_PICK_IMAGE = 1000;
     PhotoEditorView photoEditorView;
@@ -56,6 +58,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     CardView cv_filter;
     CardView cv_tune;
     CardView cv_brush;
+    CardView cv_emoji;
     int brightness1 = 0;
     float saturation1 = 1.0f;
     float constraint1 = 1.0f;
@@ -72,10 +75,12 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Filter");
 
+
         //View
         cv_filter = findViewById(R.id.cv_filter);
         cv_tune = findViewById(R.id.cv_tune);
         cv_brush = findViewById(R.id.cv_brush);
+        cv_emoji = findViewById(R.id.cv_emoji);
 
         cv_filter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,9 +107,18 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 brushFragment.show(getSupportFragmentManager(),brushFragment.getTag());
             }
         });
+        cv_emoji.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EmojiFragment emojiFragment = EmojiFragment.getInstance();
+                emojiFragment.setListener(CollageActivity.this);
+                emojiFragment.show(getSupportFragmentManager(),emojiFragment.getTag());
+            }
+        });
         photoEditorView = findViewById(R.id.image_preview);
         photoEditor = new PhotoEditor.Builder(this, photoEditorView)
                     .setPinchTextScalable(true)
+                .setDefaultEmojiTypeface(Typeface.createFromAsset(getAssets(),"emojione-android.ttf"))
                     .build();
         coordinatorLayout = findViewById(R.id.coordinator);
 
@@ -335,5 +349,10 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
             photoEditor.brushEraser();
         else
             photoEditor.setBrushDrawingMode(true);
+    }
+
+    @Override
+    public void onEmojiSelected(String emoji) {
+        photoEditor.addEmoji(emoji);
     }
 }
