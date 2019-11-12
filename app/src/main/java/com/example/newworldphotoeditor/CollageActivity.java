@@ -238,7 +238,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                                 @Override
                                 public void onBitmapReady(Bitmap saveBitmap) {
                                     try {
-                                        final String path = BitmapUltis.insertImage(getContentResolver(),lastBitmap,System.currentTimeMillis() + "_profile.jpg",null);
+                                        final String path = BitmapUltis.insertImage(getContentResolver(),saveBitmap,System.currentTimeMillis() + "_profile.jpg",null);
 
                                         if(!TextUtils.isEmpty(path)){
                                             Snackbar snackbar = Snackbar.make(coordinatorLayout, "Đã Save Vào Thư Viện Ảnh", Snackbar.LENGTH_LONG).setAction("OPEN", new View.OnClickListener() {
