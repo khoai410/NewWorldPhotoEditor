@@ -18,18 +18,18 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EditImageFragment extends BottomSheetDialogFragment implements SeekBar.OnSeekBarChangeListener {
+public class TuneFragment extends BottomSheetDialogFragment implements SeekBar.OnSeekBarChangeListener {
 
     private EditImageFragmentListener listener;
     SeekBar seekBar_brightness;
     SeekBar seekBar_saturation;
     SeekBar seekBar_constraint;
 
-    static EditImageFragment instance;
+    static TuneFragment instance;
 
-    public static EditImageFragment getInstance(){
+    public static TuneFragment getInstance(){
         if(instance == null)
-            instance = new EditImageFragment();
+            instance = new TuneFragment();
         return instance;
     }
 
@@ -37,7 +37,7 @@ public class EditImageFragment extends BottomSheetDialogFragment implements Seek
         this.listener = listener;
     }
 
-    public EditImageFragment() {
+    public TuneFragment() {
         // Required empty public constructor
 
     }

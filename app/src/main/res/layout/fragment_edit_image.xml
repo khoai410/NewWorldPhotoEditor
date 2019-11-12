@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:paddingLeft="12dp"
     android:paddingRight="12dp"
-    tools:context=".EditImageFragment">
+    tools:context=".TuneFragment">
 
     <LinearLayout
         android:orientation="vertical"

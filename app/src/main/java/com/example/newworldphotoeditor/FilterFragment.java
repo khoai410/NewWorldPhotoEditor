@@ -32,17 +32,17 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FiltersListFragment extends BottomSheetDialogFragment implements FiltersListFragmentListener {
+public class FilterFragment extends BottomSheetDialogFragment implements FiltersListFragmentListener {
     RecyclerView recyclerView;
     ThumbnailAdapter adapter;
     List<ThumbnailItem> thumbnailItems;
 
     FiltersListFragmentListener listener;
     //Singleton
-    static FiltersListFragment instance;
-    public static FiltersListFragment getInstance() {
+    static FilterFragment instance;
+    public static FilterFragment getInstance() {
         if (instance == null)
-            instance = new FiltersListFragment();
+            instance = new FilterFragment();
             return instance;
 
     }
@@ -56,7 +56,7 @@ public class FiltersListFragment extends BottomSheetDialogFragment implements Fi
         super.onCreate(savedInstanceState);
     }
 
-    public FiltersListFragment() {
+    public FilterFragment() {
         // Required empty public constructor
     }
 

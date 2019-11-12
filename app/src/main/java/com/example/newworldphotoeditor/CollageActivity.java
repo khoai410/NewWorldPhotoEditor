@@ -17,15 +17,14 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.newworldphotoeditor.Adapter.ViewPagerAdapter;
+import com.example.newworldphotoeditor.Interface.BrushFragmentListener;
 import com.example.newworldphotoeditor.Interface.EditImageFragmentListener;
 import com.example.newworldphotoeditor.Interface.FiltersListFragmentListener;
 import com.example.newworldphotoeditor.Ultis.BitmapUltis;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -43,7 +42,7 @@ import ja.burhanrashid52.photoeditor.OnSaveBitmap;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 
-public class CollageActivity extends AppCompatActivity implements FiltersListFragmentListener, EditImageFragmentListener {
+public class CollageActivity extends AppCompatActivity implements FiltersListFragmentListener, EditImageFragmentListener, BrushFragmentListener {
     public static String pictureName ="test.jpg";
     public static final int PERMISSION_PICK_IMAGE = 1000;
     PhotoEditorView photoEditorView;
@@ -52,10 +51,11 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     Bitmap ogBitmap;
     Bitmap filterBitmap;
     Bitmap lastBitmap;
-    FiltersListFragment filtersListFragment;
-    EditImageFragment editImageFragment;
+    FilterFragment filterFragment;
+    TuneFragment tuneFragment;
     CardView cv_filter;
     CardView cv_tune;
+    CardView cv_brush;
     int brightness1 = 0;
     float saturation1 = 1.0f;
     float constraint1 = 1.0f;
@@ -75,21 +75,31 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         //View
         cv_filter = findViewById(R.id.cv_filter);
         cv_tune = findViewById(R.id.cv_tune);
+        cv_brush = findViewById(R.id.cv_brush);
 
         cv_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FiltersListFragment filtersListFragment = FiltersListFragment.getInstance();
-                filtersListFragment.setListener(CollageActivity.this);
-                filtersListFragment.show(getSupportFragmentManager(),filtersListFragment.getTag());
+                FilterFragment filterFragment = FilterFragment.getInstance();
+                filterFragment.setListener(CollageActivity.this);
+                filterFragment.show(getSupportFragmentManager(), filterFragment.getTag());
             }
         });
         cv_tune.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditImageFragment editImageFragment = EditImageFragment.getInstance();
-                editImageFragment.setListener(CollageActivity.this);
-                editImageFragment.show(getSupportFragmentManager(),editImageFragment.getTag());
+                TuneFragment tuneFragment = TuneFragment.getInstance();
+                tuneFragment.setListener(CollageActivity.this);
+                tuneFragment.show(getSupportFragmentManager(), tuneFragment.getTag());
+            }
+        });
+        cv_brush.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                photoEditor.setBrushDrawingMode(true);
+                BrushFragment brushFragment = BrushFragment.getInstance();
+                brushFragment.setListener(CollageActivity.this);
+                brushFragment.show(getSupportFragmentManager(),brushFragment.getTag());
             }
         });
         photoEditorView = findViewById(R.id.image_preview);
@@ -114,14 +124,14 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        filtersListFragment = new FiltersListFragment();
-        filtersListFragment.setListener(this);
+        filterFragment = new FilterFragment();
+        filterFragment.setListener(this);
 
-        editImageFragment = new EditImageFragment();
-        editImageFragment.setListener(this);
+        tuneFragment = new TuneFragment();
+        tuneFragment.setListener(this);
 
-        adapter.addFragment(filtersListFragment, "FILTERS");
-        adapter.addFragment(editImageFragment, "TUNE EDIT");
+        adapter.addFragment(filterFragment, "FILTERS");
+        adapter.addFragment(tuneFragment, "TUNE EDIT");
 
         viewPager.setAdapter(adapter);
     }
@@ -175,8 +185,8 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     }
 
     private void reset() {
-        if(editImageFragment!=null){
-            editImageFragment.reset();
+        if(tuneFragment !=null){
+            tuneFragment.reset();
             brightness1=0;
             saturation1=1.0f;
             constraint1=1.0f;
@@ -298,9 +308,32 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
             photoEditorView.getSource().setImageBitmap(ogBitmap);
             bitmap.recycle();
 
-            filtersListFragment.displayThumbnail(ogBitmap);
+            filterFragment.displayThumbnail(ogBitmap);
 
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onBrushSizeChangedListener(float size) {
+        photoEditor.setBrushSize(size);
+    }
+
+    @Override
+    public void onBrushOpacityChangedListener(int opacity) {
+        photoEditor.setOpacity(opacity);
+    }
+
+    @Override
+    public void onBrushColorChangedListener(int color) {
+        photoEditor.setBrushColor(color);
+    }
+
+    @Override
+    public void onBrushStateChangedListener(boolean isEraser) {
+        if(isEraser)
+            photoEditor.brushEraser();
+        else
+            photoEditor.setBrushDrawingMode(true);
     }
 }
