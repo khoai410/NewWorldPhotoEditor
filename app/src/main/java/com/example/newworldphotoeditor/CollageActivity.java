@@ -11,6 +11,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -26,6 +27,7 @@ import com.example.newworldphotoeditor.Interface.BrushFragmentListener;
 import com.example.newworldphotoeditor.Interface.EditImageFragmentListener;
 import com.example.newworldphotoeditor.Interface.EmojiFragmentListener;
 import com.example.newworldphotoeditor.Interface.FiltersListFragmentListener;
+import com.example.newworldphotoeditor.Interface.FrameFragmentListener;
 import com.example.newworldphotoeditor.Interface.TextFragmentListener;
 import com.example.newworldphotoeditor.Ultis.BitmapUltis;
 import com.google.android.material.snackbar.Snackbar;
@@ -47,7 +49,7 @@ import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 
 public class CollageActivity extends AppCompatActivity implements FiltersListFragmentListener, EditImageFragmentListener, BrushFragmentListener, EmojiFragmentListener,
-        TextFragmentListener {
+        TextFragmentListener, FrameFragmentListener {
     public static String pictureName ="test.jpg";
     public static final int PERMISSION_PICK_IMAGE = 1000;
     public static final int PERMISSION_ADD_IMAGE = 1001;
@@ -66,10 +68,10 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     CardView cv_emoji;
     CardView cv_text;
     CardView cv_image;
+    CardView cv_frame;
     int brightness1 = 0;
     float saturation1 = 1.0f;
     float constraint1 = 1.0f;
-    int color = Color.YELLOW;
     static {
         System.loadLibrary("NativeImageProcessor");
     }
@@ -92,6 +94,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         cv_emoji = findViewById(R.id.cv_emoji);
         cv_text = findViewById(R.id.cv_text);
         cv_image = findViewById(R.id.cv_image);
+        cv_frame = findViewById(R.id.cv_frame);
         cv_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,7 +159,15 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 addImageToPhoto();
             }
         });
-
+        cv_frame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(CollageActivity.this, "Frame Đã Được Chọn", Toast.LENGTH_SHORT).show();
+                FrameFragment frameFragment = FrameFragment.getInstance();
+                frameFragment.setListener(CollageActivity.this);
+                frameFragment.show(getSupportFragmentManager(),frameFragment.getTag());
+            }
+        });
         photoEditorView = findViewById(R.id.image_preview);
         photoEditor = new PhotoEditor.Builder(this, photoEditorView)
                     .setPinchTextScalable(true)
@@ -195,21 +206,6 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         filterBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
         lastBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
         photoEditorView.getSource().setImageBitmap(ogBitmap);
-    }
-
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-        filterFragment = new FilterFragment();
-        filterFragment.setListener(this);
-
-        tuneFragment = new TuneFragment();
-        tuneFragment.setListener(this);
-
-        adapter.addFragment(filterFragment, "FILTERS");
-        adapter.addFragment(tuneFragment, "TUNE EDIT");
-
-        viewPager.setAdapter(adapter);
     }
 
     @Override
@@ -254,21 +250,10 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
 
     @Override
     public void onFiltersSelected(Filter filter) {
-//        reset();
         filterBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
         photoEditorView.getSource().setImageBitmap(filter.processFilter(filterBitmap));
         lastBitmap = filterBitmap.copy(Bitmap.Config.ARGB_8888,true);
     }
-
-    private void reset() {
-        if(tuneFragment !=null){
-            tuneFragment.reset();
-            brightness1=0;
-            saturation1=1.0f;
-            constraint1=1.0f;
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu,menu);
@@ -427,5 +412,11 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     @Override
     public void onTextChanged(Typeface typeface, String text, int color) {
         photoEditor.addText(typeface, text, color);
+    }
+
+    @Override
+    public void onAddedFrame(int frame) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), frame);
+        photoEditor.addImage(bitmap);
     }
 }
