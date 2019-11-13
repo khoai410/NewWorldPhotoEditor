@@ -41,9 +41,9 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if(row == position){
-            holder.imgCheck.setVisibility(View.VISIBLE);
+            holder.imgCheckColor.setVisibility(View.VISIBLE);
         }else{
-            holder.imgCheck.setVisibility(View.INVISIBLE);
+            holder.imgCheckColor.setVisibility(View.INVISIBLE);
         }
         holder.color_picker.setCardBackgroundColor(colorList.get(position));
     }
