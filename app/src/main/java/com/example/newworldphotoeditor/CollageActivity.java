@@ -49,6 +49,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         TextFragmentListener {
     public static String pictureName ="test.jpg";
     public static final int PERMISSION_PICK_IMAGE = 1000;
+    public static final int PERMISSION_ADD_IMAGE = 1001;
     PhotoEditorView photoEditorView;
     PhotoEditor photoEditor;
     CoordinatorLayout coordinatorLayout;
@@ -62,6 +63,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     CardView cv_brush;
     CardView cv_emoji;
     CardView cv_text;
+    CardView cv_image;
     int brightness1 = 0;
     float saturation1 = 1.0f;
     float constraint1 = 1.0f;
@@ -85,7 +87,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         cv_brush = findViewById(R.id.cv_brush);
         cv_emoji = findViewById(R.id.cv_emoji);
         cv_text = findViewById(R.id.cv_text);
-
+        cv_image = findViewById(R.id.cv_image);
         cv_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,6 +129,12 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 textFragment.show(getSupportFragmentManager(),textFragment.getTag());
             }
         });
+        cv_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addImageToPhoto();
+            }
+        });
         photoEditorView = findViewById(R.id.image_preview);
         photoEditor = new PhotoEditor.Builder(this, photoEditorView)
                     .setPinchTextScalable(true)
@@ -138,6 +146,26 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
 
 
 
+    }
+
+    private void addImageToPhoto() {
+        Dexter.withActivity(this).withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if(report.areAllPermissionsGranted()){
+                            Intent intent = new Intent(Intent.ACTION_PICK);
+                            intent.setType("image/*");
+                            startActivityForResult(intent, PERMISSION_ADD_IMAGE);
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        Toast.makeText(CollageActivity.this, "Chưa cấp quyền", Toast.LENGTH_SHORT).show();
+                    }
+                }).check();
     }
 
     private void loadImage() {
@@ -322,20 +350,25 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
-        if (resultCode == RESULT_OK && requestCode == PERMISSION_PICK_IMAGE) {
-            Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this, data.getData(), 800, 800);
-            ogBitmap.recycle();
-            lastBitmap.recycle();
-            filterBitmap.recycle();
-            //Xóa bộ nhớ Bitmap
-            ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-            lastBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-            filterBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-            photoEditorView.getSource().setImageBitmap(ogBitmap);
-            bitmap.recycle();
+        if (resultCode == RESULT_OK) {
+            if(requestCode == PERMISSION_PICK_IMAGE) {
+                Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this, data.getData(), 800, 800);
+                ogBitmap.recycle();
+                lastBitmap.recycle();
+                filterBitmap.recycle();
+                //Xóa bộ nhớ Bitmap
+                ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                lastBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                filterBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                photoEditorView.getSource().setImageBitmap(ogBitmap);
+                bitmap.recycle();
 
-            filterFragment.displayThumbnail(ogBitmap);
-
+                filterFragment.displayThumbnail(ogBitmap);
+            }
+            else if(requestCode == PERMISSION_ADD_IMAGE){
+                 Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this,data.getData(),300,300);
+                 photoEditor.addImage(bitmap);
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
