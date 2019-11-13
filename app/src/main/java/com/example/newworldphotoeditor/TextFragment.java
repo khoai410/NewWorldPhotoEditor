@@ -2,6 +2,7 @@ package com.example.newworldphotoeditor;
 
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,7 +17,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.example.newworldphotoeditor.Adapter.ColorAdapter;
+import com.example.newworldphotoeditor.Adapter.FontAdapter;
 import com.example.newworldphotoeditor.Interface.ColorListener;
+import com.example.newworldphotoeditor.Interface.FontListener;
 import com.example.newworldphotoeditor.Interface.TextFragmentListener;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -24,7 +27,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TextFragment extends BottomSheetDialogFragment implements ColorListener {
+public class TextFragment extends BottomSheetDialogFragment implements ColorListener, FontListener {
 
     int colorDefault = Color.parseColor("#000000");
 
@@ -32,7 +35,10 @@ public class TextFragment extends BottomSheetDialogFragment implements ColorList
 
     EditText edtText;
     RecyclerView rvColor;
+    RecyclerView rvFont;
     Button btnConfirm;
+
+    Typeface typeface = Typeface.DEFAULT;
 
     static TextFragment instance;
 
@@ -57,6 +63,7 @@ public class TextFragment extends BottomSheetDialogFragment implements ColorList
         View view = inflater.inflate(R.layout.fragment_text, container, false);
         edtText = view.findViewById(R.id.edtText);
         rvColor = view.findViewById(R.id.rvColor);
+        rvFont = view.findViewById(R.id.rvFont);
         btnConfirm = view.findViewById(R.id.btnConfirm);
 
         rvColor.setHasFixedSize(true);
@@ -64,10 +71,15 @@ public class TextFragment extends BottomSheetDialogFragment implements ColorList
         ColorAdapter colorAdapter = new ColorAdapter(getContext(), this);
         rvColor.setAdapter(colorAdapter);
 
+        rvFont.setHasFixedSize(true);
+        rvFont.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        FontAdapter fontAdapter = new FontAdapter(getContext(), this);
+        rvFont.setAdapter(fontAdapter);
+
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onTextChanged(edtText.getText().toString(), colorDefault);
+                listener.onTextChanged(typeface, edtText.getText().toString(), colorDefault);
                 getFragmentManager().beginTransaction().remove(TextFragment.this).commit();
             }
         });
@@ -77,5 +89,10 @@ public class TextFragment extends BottomSheetDialogFragment implements ColorList
     @Override
     public void onColorPicked(int color) {
         colorDefault = color;
+    }
+
+    @Override
+    public void onFontPicked(String fontName) {
+        typeface = Typeface.createFromAsset(getContext().getAssets(), new StringBuilder("fonts/").append(fontName).toString());
     }
 }

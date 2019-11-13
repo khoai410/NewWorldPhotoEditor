@@ -402,7 +402,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     }
 
     @Override
-    public void onTextChanged(String text, int color) {
-        photoEditor.addText(text, color);
+    public void onTextChanged(Typeface typeface, String text, int color) {
+        photoEditor.addText(typeface, text, color);
     }
 }

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -22,6 +23,8 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     List<Integer> colorList;
     ColorListener colorListener;
 
+    int row = -1;
+
     public ColorAdapter(Context context, ColorListener colorListener) {
         this.context = context;
         this.colorList = colorList();
@@ -37,6 +40,11 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        if(row == position){
+            holder.imgCheck.setVisibility(View.VISIBLE);
+        }else{
+            holder.imgCheck.setVisibility(View.INVISIBLE);
+        }
         holder.color_picker.setCardBackgroundColor(colorList.get(position));
     }
 
@@ -48,14 +56,18 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public CardView color_picker;
+        ImageView imgCheckColor;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             color_picker = itemView.findViewById(R.id.color_picker);
+            imgCheckColor = itemView.findViewById(R.id.imgCheckColor);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     colorListener.onColorPicked(colorList.get(getAdapterPosition()));
+                    row = getAdapterPosition();
+                    notifyDataSetChanged();
                 }
             });
         }
