@@ -25,6 +25,7 @@ import com.example.newworldphotoeditor.Interface.BrushFragmentListener;
 import com.example.newworldphotoeditor.Interface.EditImageFragmentListener;
 import com.example.newworldphotoeditor.Interface.EmojiFragmentListener;
 import com.example.newworldphotoeditor.Interface.FiltersListFragmentListener;
+import com.example.newworldphotoeditor.Interface.TextFragmentListener;
 import com.example.newworldphotoeditor.Ultis.BitmapUltis;
 import com.google.android.material.snackbar.Snackbar;
 import com.karumi.dexter.Dexter;
@@ -44,7 +45,8 @@ import ja.burhanrashid52.photoeditor.OnSaveBitmap;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 
-public class CollageActivity extends AppCompatActivity implements FiltersListFragmentListener, EditImageFragmentListener, BrushFragmentListener, EmojiFragmentListener {
+public class CollageActivity extends AppCompatActivity implements FiltersListFragmentListener, EditImageFragmentListener, BrushFragmentListener, EmojiFragmentListener,
+        TextFragmentListener {
     public static String pictureName ="test.jpg";
     public static final int PERMISSION_PICK_IMAGE = 1000;
     PhotoEditorView photoEditorView;
@@ -59,6 +61,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     CardView cv_tune;
     CardView cv_brush;
     CardView cv_emoji;
+    CardView cv_text;
     int brightness1 = 0;
     float saturation1 = 1.0f;
     float constraint1 = 1.0f;
@@ -81,6 +84,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         cv_tune = findViewById(R.id.cv_tune);
         cv_brush = findViewById(R.id.cv_brush);
         cv_emoji = findViewById(R.id.cv_emoji);
+        cv_text = findViewById(R.id.cv_text);
 
         cv_filter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,6 +117,14 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 EmojiFragment emojiFragment = EmojiFragment.getInstance();
                 emojiFragment.setListener(CollageActivity.this);
                 emojiFragment.show(getSupportFragmentManager(),emojiFragment.getTag());
+            }
+        });
+        cv_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextFragment textFragment = TextFragment.getInstance();
+                textFragment.setListener(CollageActivity.this);
+                textFragment.show(getSupportFragmentManager(),textFragment.getTag());
             }
         });
         photoEditorView = findViewById(R.id.image_preview);
@@ -354,5 +366,10 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     @Override
     public void onEmojiSelected(String emoji) {
         photoEditor.addEmoji(emoji);
+    }
+
+    @Override
+    public void onTextChanged(String text, int color) {
+        photoEditor.addText(text, color);
     }
 }

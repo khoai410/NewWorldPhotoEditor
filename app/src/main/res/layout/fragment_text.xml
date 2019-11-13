@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_height="match_parent"
+    tools:context=".TextFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <EditText
+        android:id="@+id/edtText"
+        android:scrollbars="vertical"
+        android:maxHeight="300dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Add Text Here" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvColor"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/btnConfirm"
+        android:text="Confirm Text To Image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

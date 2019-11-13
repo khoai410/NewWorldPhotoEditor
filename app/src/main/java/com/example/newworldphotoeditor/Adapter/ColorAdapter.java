@@ -1,6 +1,7 @@
 package com.example.newworldphotoeditor.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.newworldphotoeditor.Interface.ColorListener;
 import com.example.newworldphotoeditor.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> {
@@ -20,9 +22,9 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     List<Integer> colorList;
     ColorListener colorListener;
 
-    public ColorAdapter(Context context, List<Integer> colorList, ColorListener colorListener) {
+    public ColorAdapter(Context context, ColorListener colorListener) {
         this.context = context;
-        this.colorList = colorList;
+        this.colorList = colorList();
         this.colorListener = colorListener;
     }
 
@@ -57,5 +59,25 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
                 }
             });
         }
+    }
+    private List<Integer> colorList() {
+        List<Integer> colorList = new ArrayList<>();
+        colorList.add(Color.parseColor("#FFFFFF"));
+        colorList.add(Color.parseColor("#C0C0C0"));
+        colorList.add(Color.parseColor("#808080"));
+        colorList.add(Color.parseColor("#000000"));
+        colorList.add(Color.parseColor("#FF0000"));
+        colorList.add(Color.parseColor("#800000"));
+        colorList.add(Color.parseColor("#FFFF00"));
+        colorList.add(Color.parseColor("#808000"));
+        colorList.add(Color.parseColor("#00FF00"));
+        colorList.add(Color.parseColor("#008000"));
+        colorList.add(Color.parseColor("#00FFFF"));
+        colorList.add(Color.parseColor("#008080"));
+        colorList.add(Color.parseColor("#0000FF"));
+        colorList.add(Color.parseColor("#000080"));
+        colorList.add(Color.parseColor("#FF00FF"));
+        colorList.add(Color.parseColor("#800080"));
+        return colorList;
     }
 }

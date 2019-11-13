@@ -66,7 +66,7 @@ public class BrushFragment extends BottomSheetDialogFragment implements ColorLis
         toggleButton = view.findViewById(R.id.tgbBrushEraser);
         rvColor.setHasFixedSize(true);
         rvColor.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL,false));
-        colorAdapter = new ColorAdapter(getContext(), colorList(), this);
+        colorAdapter = new ColorAdapter(getContext(), this);
         rvColor.setAdapter(colorAdapter);
 
         brushSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -105,31 +105,13 @@ public class BrushFragment extends BottomSheetDialogFragment implements ColorLis
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 listener.onBrushStateChangedListener(isChecked);
+                getFragmentManager().beginTransaction().remove(BrushFragment.this).commit();
             }
         });
         return view;
     }
 
-    private List<Integer> colorList() {
-        List<Integer> colorList = new ArrayList<>();
-        colorList.add(Color.parseColor("#FFFFFF"));
-        colorList.add(Color.parseColor("#C0C0C0"));
-        colorList.add(Color.parseColor("#808080"));
-        colorList.add(Color.parseColor("#000000"));
-        colorList.add(Color.parseColor("#FF0000"));
-        colorList.add(Color.parseColor("#800000"));
-        colorList.add(Color.parseColor("#FFFF00"));
-        colorList.add(Color.parseColor("#808000"));
-        colorList.add(Color.parseColor("#00FF00"));
-        colorList.add(Color.parseColor("#008000"));
-        colorList.add(Color.parseColor("#00FFFF"));
-        colorList.add(Color.parseColor("#008080"));
-        colorList.add(Color.parseColor("#0000FF"));
-        colorList.add(Color.parseColor("#000080"));
-        colorList.add(Color.parseColor("#FF00FF"));
-        colorList.add(Color.parseColor("#800080"));
-        return colorList;
-    }
+
 
     @Override
     public void onColorPicked(int color) {
