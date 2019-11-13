@@ -11,6 +11,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -61,12 +62,14 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     CardView cv_filter;
     CardView cv_tune;
     CardView cv_brush;
+    CardView cv_eraser;
     CardView cv_emoji;
     CardView cv_text;
     CardView cv_image;
     int brightness1 = 0;
     float saturation1 = 1.0f;
     float constraint1 = 1.0f;
+    int color = Color.YELLOW;
     static {
         System.loadLibrary("NativeImageProcessor");
     }
@@ -78,27 +81,34 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Filter");
+        getSupportActionBar().setTitle("Photo Editor");
 
 
         //View
         cv_filter = findViewById(R.id.cv_filter);
         cv_tune = findViewById(R.id.cv_tune);
         cv_brush = findViewById(R.id.cv_brush);
+        cv_eraser = findViewById(R.id.cv_eraser);
         cv_emoji = findViewById(R.id.cv_emoji);
         cv_text = findViewById(R.id.cv_text);
         cv_image = findViewById(R.id.cv_image);
         cv_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FilterFragment filterFragment = FilterFragment.getInstance();
-                filterFragment.setListener(CollageActivity.this);
-                filterFragment.show(getSupportFragmentManager(), filterFragment.getTag());
+                if(filterFragment != null){
+                    filterFragment.show(getSupportFragmentManager(), filterFragment.getTag());
+                }else{
+                    Toast.makeText(CollageActivity.this, "Filter Đã Được Chọn", Toast.LENGTH_SHORT).show();
+                    FilterFragment filterFragment = FilterFragment.getInstance(null);
+                    filterFragment.setListener(CollageActivity.this);
+                    filterFragment.show(getSupportFragmentManager(), filterFragment.getTag());
+                }
             }
         });
         cv_tune.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(CollageActivity.this, "Tune Đã Được Chọn", Toast.LENGTH_SHORT).show();
                 TuneFragment tuneFragment = TuneFragment.getInstance();
                 tuneFragment.setListener(CollageActivity.this);
                 tuneFragment.show(getSupportFragmentManager(), tuneFragment.getTag());
@@ -107,15 +117,24 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         cv_brush.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(CollageActivity.this, "Brush Đã Được Chọn", Toast.LENGTH_SHORT).show();
                 photoEditor.setBrushDrawingMode(true);
                 BrushFragment brushFragment = BrushFragment.getInstance();
                 brushFragment.setListener(CollageActivity.this);
                 brushFragment.show(getSupportFragmentManager(),brushFragment.getTag());
             }
         });
+        cv_eraser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    Toast.makeText(CollageActivity.this, "Eraser Đã Được Chọn", Toast.LENGTH_SHORT).show();
+                    photoEditor.brushEraser();
+            }
+        });
         cv_emoji.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(CollageActivity.this, "Emoji Đã Được Chọn", Toast.LENGTH_LONG).show();
                 EmojiFragment emojiFragment = EmojiFragment.getInstance();
                 emojiFragment.setListener(CollageActivity.this);
                 emojiFragment.show(getSupportFragmentManager(),emojiFragment.getTag());
@@ -124,6 +143,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         cv_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(CollageActivity.this, "Text Đã Được Chọn", Toast.LENGTH_SHORT).show();
                 TextFragment textFragment = TextFragment.getInstance();
                 textFragment.setListener(CollageActivity.this);
                 textFragment.show(getSupportFragmentManager(),textFragment.getTag());
@@ -132,9 +152,11 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         cv_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(CollageActivity.this, "Photo Đã Được Chọn", Toast.LENGTH_SHORT).show();
                 addImageToPhoto();
             }
         });
+
         photoEditorView = findViewById(R.id.image_preview);
         photoEditor = new PhotoEditor.Builder(this, photoEditorView)
                     .setPinchTextScalable(true)
@@ -232,7 +254,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
 
     @Override
     public void onFiltersSelected(Filter filter) {
-        reset();
+//        reset();
         filterBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
         photoEditorView.getSource().setImageBitmap(filter.processFilter(filterBitmap));
         lastBitmap = filterBitmap.copy(Bitmap.Config.ARGB_8888,true);
@@ -363,7 +385,8 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 photoEditorView.getSource().setImageBitmap(ogBitmap);
                 bitmap.recycle();
 
-                filterFragment.displayThumbnail(ogBitmap);
+                filterFragment = FilterFragment.getInstance(ogBitmap);
+                filterFragment.setListener(this);
             }
             else if(requestCode == PERMISSION_ADD_IMAGE){
                  Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this,data.getData(),300,300);
@@ -388,13 +411,13 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         photoEditor.setBrushColor(color);
     }
 
-    @Override
-    public void onBrushStateChangedListener(boolean isEraser) {
-        if(isEraser)
-            photoEditor.brushEraser();
-        else
-            photoEditor.setBrushDrawingMode(true);
-    }
+//    @Override
+//    public void onBrushStateChangedListener(boolean isEraser) {
+//        if(isEraser)
+//            photoEditor.brushEraser();
+//        else
+//            photoEditor.setBrushDrawingMode(true);
+//    }
 
     @Override
     public void onEmojiSelected(String emoji) {

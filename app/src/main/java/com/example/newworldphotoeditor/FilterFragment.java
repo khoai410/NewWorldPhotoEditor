@@ -40,11 +40,16 @@ public class FilterFragment extends BottomSheetDialogFragment implements Filters
     FiltersListFragmentListener listener;
     //Singleton
     static FilterFragment instance;
-    public static FilterFragment getInstance() {
-        if (instance == null)
-            instance = new FilterFragment();
-            return instance;
 
+    static Bitmap bitmap;
+    public static FilterFragment getInstance(Bitmap bitmapS) {
+        bitmap = bitmapS;
+        if (instance == null) {
+            instance = new FilterFragment();
+
+
+        }
+        return instance;
     }
 
     public void setListener(FiltersListFragmentListener listener) {
@@ -75,7 +80,7 @@ public class FilterFragment extends BottomSheetDialogFragment implements Filters
         int space = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
         recyclerView.addItemDecoration(new ItemDecoration(space));
         recyclerView.setAdapter(adapter);
-        displayThumbnail(null);
+        displayThumbnail(bitmap);
         return view;
     }
 

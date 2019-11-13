@@ -33,7 +33,6 @@ public class BrushFragment extends BottomSheetDialogFragment implements ColorLis
     SeekBar brushSize;
     SeekBar brushOpacity;
     RecyclerView rvColor;
-    ToggleButton toggleButton;
     ColorAdapter colorAdapter;
 
     BrushFragmentListener listener;
@@ -63,7 +62,6 @@ public class BrushFragment extends BottomSheetDialogFragment implements ColorLis
         brushSize = view.findViewById(R.id.seekbar_brushSize);
         brushOpacity = view.findViewById(R.id.seekbar_brushOpacity);
         rvColor = view.findViewById(R.id.rvBrush);
-        toggleButton = view.findViewById(R.id.tgbBrushEraser);
         rvColor.setHasFixedSize(true);
         rvColor.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL,false));
         colorAdapter = new ColorAdapter(getContext(), this);
@@ -101,13 +99,7 @@ public class BrushFragment extends BottomSheetDialogFragment implements ColorLis
 
             }
         });
-        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                listener.onBrushStateChangedListener(isChecked);
-                getFragmentManager().beginTransaction().remove(BrushFragment.this).commit();
-            }
-        });
+
         return view;
     }
 
