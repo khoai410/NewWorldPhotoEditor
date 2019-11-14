@@ -82,11 +82,12 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     CardView cv_image;
     CardView cv_frame;
     CardView cv_crop;
-    CardView cv_share;
+    CardView cv_wallpaper;
     int brightness1 = 0;
     float saturation1 = 1.0f;
     float constraint1 = 1.0f;
-
+    Bitmap bitmapWallpaper1, bitmapWallpaper2;
+    int width, height;
     Uri imageUri;
     static {
         System.loadLibrary("NativeImageProcessor");
@@ -112,7 +113,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         cv_image = findViewById(R.id.cv_image);
         cv_frame = findViewById(R.id.cv_frame);
         cv_crop = findViewById(R.id.cv_crop);
-        cv_share = findViewById(R.id.cv_share);
+        cv_wallpaper = findViewById(R.id.cv_wallpaper);
         cv_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,10 +193,11 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 cropImage(imageUri);
             }
         });
-        cv_share.setOnClickListener(new View.OnClickListener() {
+        cv_wallpaper.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                setSetwallpaper();
+                Toast.makeText(CollageActivity.this, "Đã Set Được Wallpaper", Toast.LENGTH_SHORT).show();
             }
         });
         photoEditorView = findViewById(R.id.image_preview);
@@ -485,6 +487,11 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         Uri finalUri = UCrop.getOutput(data);
         if(finalUri != null){
             photoEditorView.getSource().setImageURI(finalUri);
+
+            Bitmap bitmap = ((BitmapDrawable) photoEditorView.getSource().getDrawable()).getBitmap();
+            ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+            filterBitmap = ogBitmap;
+            lastBitmap =ogBitmap;
         }else{
             Toast.makeText(CollageActivity.this, "Ảnh Không Crop Được", Toast.LENGTH_SHORT).show();
         }
@@ -527,5 +534,28 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     public void onAddedFrame(int frame) {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), frame);
         photoEditor.addImage(bitmap);
+    }
+    private void setSetwallpaper() {
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) photoEditorView.getSource().getDrawable();
+        bitmapWallpaper1 = bitmapDrawable.getBitmap();
+        GetScreenWidthHeight();
+        SetBitmapSize();
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(CollageActivity.this);
+        try {
+            wallpaperManager.setBitmap(bitmapWallpaper2);
+            wallpaperManager.suggestDesiredDimensions(width, height);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void GetScreenWidthHeight() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        width = photoEditorView.getWidth();
+        height = photoEditorView.getHeight();
+    }
+
+    public void SetBitmapSize() {
+        bitmapWallpaper2 = Bitmap.createScaledBitmap(bitmapWallpaper1, width, height, false);
     }
 }
