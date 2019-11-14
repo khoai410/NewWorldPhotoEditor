@@ -9,14 +9,18 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.app.WallpaperManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,17 +40,22 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.yalantis.ucrop.UCrop;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubfilter;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import ja.burhanrashid52.photoeditor.OnSaveBitmap;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
+
+import static com.yalantis.ucrop.UCrop.REQUEST_CROP;
 
 public class CollageActivity extends AppCompatActivity implements FiltersListFragmentListener, EditImageFragmentListener, BrushFragmentListener, EmojiFragmentListener,
         TextFragmentListener, FrameFragmentListener {
@@ -69,9 +78,13 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     CardView cv_text;
     CardView cv_image;
     CardView cv_frame;
+    CardView cv_crop;
+    CardView cv_share;
     int brightness1 = 0;
     float saturation1 = 1.0f;
     float constraint1 = 1.0f;
+
+    Uri imageUri;
     static {
         System.loadLibrary("NativeImageProcessor");
     }
@@ -95,6 +108,8 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         cv_text = findViewById(R.id.cv_text);
         cv_image = findViewById(R.id.cv_image);
         cv_frame = findViewById(R.id.cv_frame);
+        cv_crop = findViewById(R.id.cv_crop);
+        cv_share = findViewById(R.id.cv_share);
         cv_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,6 +183,18 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 frameFragment.show(getSupportFragmentManager(),frameFragment.getTag());
             }
         });
+        cv_crop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cropImage(imageUri);
+            }
+        });
+        cv_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         photoEditorView = findViewById(R.id.image_preview);
         photoEditor = new PhotoEditor.Builder(this, photoEditorView)
                     .setPinchTextScalable(true)
@@ -175,10 +202,18 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                     .build();
         coordinatorLayout = findViewById(R.id.coordinator);
 
-        loadImage();
+//        loadImage();
 
 
 
+    }
+
+    private void cropImage(Uri uri) {
+        String fileName = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
+
+        UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), fileName)));
+
+        uCrop.start(CollageActivity.this);
     }
 
     private void addImageToPhoto() {
@@ -201,12 +236,12 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 }).check();
     }
 
-    private void loadImage() {
-        ogBitmap = BitmapUltis.getBitmapFromAssets(this, pictureName,300, 300);
-        filterBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
-        lastBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
-        photoEditorView.getSource().setImageBitmap(ogBitmap);
-    }
+//    private void loadImage() {
+//        ogBitmap = BitmapUltis.getBitmapFromAssets(this, pictureName,300, 300);
+//        filterBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
+//        lastBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
+//        photoEditorView.getSource().setImageBitmap(ogBitmap);
+//    }
 
     @Override
     public void onBrightnessChanged(int brightness) {
@@ -360,9 +395,11 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         if (resultCode == RESULT_OK) {
             if(requestCode == PERMISSION_PICK_IMAGE) {
                 Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this, data.getData(), 800, 800);
-                ogBitmap.recycle();
-                lastBitmap.recycle();
-                filterBitmap.recycle();
+
+                imageUri = data.getData();
+//                ogBitmap.recycle();
+//                lastBitmap.recycle();
+//                filterBitmap.recycle();
                 //Xóa bộ nhớ Bitmap
                 ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 lastBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -377,8 +414,32 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                  Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this,data.getData(),300,300);
                  photoEditor.addImage(bitmap);
             }
+            else if(requestCode == REQUEST_CROP){
+                cropResult(data);
+            }else if(resultCode == UCrop.RESULT_ERROR){
+                cropError(data);
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void cropError(Intent data) {
+        Throwable cropError = UCrop.getError(data);
+        if(cropError!= null){
+            Toast.makeText(CollageActivity.this, "" + cropError.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Toast.makeText(CollageActivity.this, "Lỗi" , Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void cropResult(Intent data) {
+        Uri finalUri = UCrop.getOutput(data);
+        if(finalUri != null){
+            photoEditorView.getSource().setImageURI(finalUri);
+        }else{
+            Toast.makeText(CollageActivity.this, "Ảnh Không Crop Được", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
