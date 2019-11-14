@@ -20,10 +20,6 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
     private static final int GALLERY_RESULT = 1;
     private static final int CAMERA_RESULT = 2;
-//    private static final String FILE_PROVIDER_AUTHORITY = "com.example.newworldphotoeditor";
-//    private static final int CAMERA_PERMISSION_CODE = 99;
-//    private static final int STORAGE_PERMISSION_CODE = 100 ;
-//    private String mCaptureImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onCamera(View view) {
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAMERA_RESULT);
     }
 

@@ -10,6 +10,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.app.WallpaperManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,6 +20,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -62,6 +64,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     public static String pictureName ="test.jpg";
     public static final int PERMISSION_PICK_IMAGE = 1000;
     public static final int PERMISSION_ADD_IMAGE = 1001;
+    public static final int PERMISSION_OPEN_CAMERA = 1002;
     PhotoEditorView photoEditorView;
     PhotoEditor photoEditor;
     CoordinatorLayout coordinatorLayout;
@@ -306,7 +309,35 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
             saveImageToGallery();
             return true;
         }
+        if(id == R.id.camera){
+            openCamera();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openCamera() {
+        Dexter.withActivity(this)
+                .withPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if(report.areAllPermissionsGranted()){
+                            ContentValues values = new ContentValues();
+                            values.put(MediaStore.Images.Media.TITLE, "New Image");
+                            values.put(MediaStore.Images.Media.DESCRIPTION, "Chụp Ảnh Từ Camera");
+                            imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                            Intent cameraIntent =  new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                            startActivityForResult(cameraIntent, PERMISSION_OPEN_CAMERA);
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+
+                    }
+                }).check();
     }
 
     private void saveImageToGallery() {
@@ -395,6 +426,23 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         if (resultCode == RESULT_OK) {
             if(requestCode == PERMISSION_PICK_IMAGE) {
                 Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this, data.getData(), 800, 800);
+
+                imageUri = data.getData();
+//                ogBitmap.recycle();
+//                lastBitmap.recycle();
+//                filterBitmap.recycle();
+                //Xóa bộ nhớ Bitmap
+                ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                lastBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                filterBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                photoEditorView.getSource().setImageBitmap(ogBitmap);
+                bitmap.recycle();
+
+                filterFragment = FilterFragment.getInstance(ogBitmap);
+                filterFragment.setListener(this);
+            }
+            if(requestCode == PERMISSION_OPEN_CAMERA){
+                Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this, imageUri, 800, 800);
 
                 imageUri = data.getData();
 //                ogBitmap.recycle();
