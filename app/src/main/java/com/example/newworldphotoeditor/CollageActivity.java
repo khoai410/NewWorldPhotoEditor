@@ -34,6 +34,7 @@ import com.example.newworldphotoeditor.Interface.EditImageFragmentListener;
 import com.example.newworldphotoeditor.Interface.EmojiFragmentListener;
 import com.example.newworldphotoeditor.Interface.FiltersListFragmentListener;
 import com.example.newworldphotoeditor.Interface.FrameFragmentListener;
+import com.example.newworldphotoeditor.Interface.StickerFragmentListener;
 import com.example.newworldphotoeditor.Interface.TextFragmentListener;
 import com.example.newworldphotoeditor.Ultis.BitmapUltis;
 import com.google.android.material.snackbar.Snackbar;
@@ -60,7 +61,7 @@ import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import static com.yalantis.ucrop.UCrop.REQUEST_CROP;
 
 public class CollageActivity extends AppCompatActivity implements FiltersListFragmentListener, EditImageFragmentListener, BrushFragmentListener, EmojiFragmentListener,
-        TextFragmentListener, FrameFragmentListener {
+        TextFragmentListener, FrameFragmentListener, StickerFragmentListener {
     public static String pictureName ="test.jpg";
     public static final int PERMISSION_PICK_IMAGE = 1000;
     public static final int PERMISSION_ADD_IMAGE = 1001;
@@ -82,6 +83,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     CardView cv_image;
     CardView cv_frame;
     CardView cv_crop;
+    CardView cv_sticker;
     CardView cv_wallpaper;
     int brightness1 = 0;
     float saturation1 = 1.0f;
@@ -113,6 +115,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         cv_image = findViewById(R.id.cv_image);
         cv_frame = findViewById(R.id.cv_frame);
         cv_crop = findViewById(R.id.cv_crop);
+        cv_sticker = findViewById(R.id.cv_sticker);
         cv_wallpaper = findViewById(R.id.cv_wallpaper);
         cv_filter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,7 +193,17 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         cv_crop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(CollageActivity.this, "Crop Đã Được Chọn", Toast.LENGTH_SHORT).show();
                 cropImage(imageUri);
+            }
+        });
+        cv_sticker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(CollageActivity.this, "Sticker Đã Được Chọn", Toast.LENGTH_SHORT).show();
+                StickerFragment stickerFragment = StickerFragment.getInstance();
+                stickerFragment.setListener(CollageActivity.this);
+                stickerFragment.show(getSupportFragmentManager(),stickerFragment.getTag());
             }
         });
         cv_wallpaper.setOnClickListener(new View.OnClickListener() {
@@ -557,5 +570,11 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
 
     public void SetBitmapSize() {
         bitmapWallpaper2 = Bitmap.createScaledBitmap(bitmapWallpaper1, width, height, false);
+    }
+
+    @Override
+    public void onAddedSticker(int sticker) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), sticker);
+        photoEditor.addImage(bitmap);
     }
 }
