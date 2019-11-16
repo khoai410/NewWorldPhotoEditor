@@ -54,11 +54,10 @@ public class MainActivity extends AppCompatActivity {
 //        startActivity(intent);
 //        Intent intent = new Intent(MainActivity.this, LoginFacebookActivity.class);
         startActivity(intent);
-
     }
 
     public void onCamera(View view) {
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAMERA_RESULT);
     }
 

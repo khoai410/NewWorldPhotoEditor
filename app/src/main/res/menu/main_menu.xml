@@ -2,6 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+
     <item
         android:id="@+id/open"
         android:icon="@drawable/ic_image"
@@ -11,10 +13,21 @@
         android:title="OPEN"/>
 
     <item
+        android:id="@+id/camera"
+        android:enabled="true"
+        android:icon="@drawable/ic_camera_alt_black_24dp"
+        android:orderInCategory="101"
+        app:showAsAction="always"
+        android:title="CAMERA"/>
+
+
+    <item
         android:id="@+id/save"
         android:enabled="true"
         android:icon="@drawable/ic_file_download_black_24dp"
         android:orderInCategory="101"
         app:showAsAction="always"
         android:title="SAVE"/>
+
+
 </menu>

@@ -9,14 +9,20 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.app.WallpaperManager;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +34,7 @@ import com.example.newworldphotoeditor.Interface.EditImageFragmentListener;
 import com.example.newworldphotoeditor.Interface.EmojiFragmentListener;
 import com.example.newworldphotoeditor.Interface.FiltersListFragmentListener;
 import com.example.newworldphotoeditor.Interface.FrameFragmentListener;
+import com.example.newworldphotoeditor.Interface.StickerFragmentListener;
 import com.example.newworldphotoeditor.Interface.TextFragmentListener;
 import com.example.newworldphotoeditor.Ultis.BitmapUltis;
 import com.google.android.material.snackbar.Snackbar;
@@ -36,23 +43,29 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.yalantis.ucrop.UCrop;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubfilter;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import ja.burhanrashid52.photoeditor.OnSaveBitmap;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 
+import static com.yalantis.ucrop.UCrop.REQUEST_CROP;
+
 public class CollageActivity extends AppCompatActivity implements FiltersListFragmentListener, EditImageFragmentListener, BrushFragmentListener, EmojiFragmentListener,
-        TextFragmentListener, FrameFragmentListener {
+        TextFragmentListener, FrameFragmentListener, StickerFragmentListener {
     public static String pictureName ="test.jpg";
     public static final int PERMISSION_PICK_IMAGE = 1000;
     public static final int PERMISSION_ADD_IMAGE = 1001;
+    public static final int PERMISSION_OPEN_CAMERA = 1002;
     PhotoEditorView photoEditorView;
     PhotoEditor photoEditor;
     CoordinatorLayout coordinatorLayout;
@@ -69,9 +82,15 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     CardView cv_text;
     CardView cv_image;
     CardView cv_frame;
+    CardView cv_crop;
+    CardView cv_sticker;
+    CardView cv_wallpaper;
     int brightness1 = 0;
     float saturation1 = 1.0f;
     float constraint1 = 1.0f;
+    Bitmap bitmapWallpaper1, bitmapWallpaper2;
+    int width, height;
+    Uri imageUri;
     static {
         System.loadLibrary("NativeImageProcessor");
     }
@@ -95,6 +114,9 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         cv_text = findViewById(R.id.cv_text);
         cv_image = findViewById(R.id.cv_image);
         cv_frame = findViewById(R.id.cv_frame);
+        cv_crop = findViewById(R.id.cv_crop);
+        cv_sticker = findViewById(R.id.cv_sticker);
+        cv_wallpaper = findViewById(R.id.cv_wallpaper);
         cv_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,6 +190,29 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 frameFragment.show(getSupportFragmentManager(),frameFragment.getTag());
             }
         });
+        cv_crop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(CollageActivity.this, "Crop Đã Được Chọn", Toast.LENGTH_SHORT).show();
+                cropImage(imageUri);
+            }
+        });
+        cv_sticker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(CollageActivity.this, "Sticker Đã Được Chọn", Toast.LENGTH_SHORT).show();
+                StickerFragment stickerFragment = StickerFragment.getInstance();
+                stickerFragment.setListener(CollageActivity.this);
+                stickerFragment.show(getSupportFragmentManager(),stickerFragment.getTag());
+            }
+        });
+        cv_wallpaper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSetwallpaper();
+                Toast.makeText(CollageActivity.this, "Đã Set Được Wallpaper", Toast.LENGTH_SHORT).show();
+            }
+        });
         photoEditorView = findViewById(R.id.image_preview);
         photoEditor = new PhotoEditor.Builder(this, photoEditorView)
                     .setPinchTextScalable(true)
@@ -175,10 +220,18 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                     .build();
         coordinatorLayout = findViewById(R.id.coordinator);
 
-        loadImage();
+//        loadImage();
 
 
 
+    }
+
+    private void cropImage(Uri uri) {
+        String fileName = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
+
+        UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), fileName)));
+
+        uCrop.start(CollageActivity.this);
     }
 
     private void addImageToPhoto() {
@@ -201,12 +254,12 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 }).check();
     }
 
-    private void loadImage() {
-        ogBitmap = BitmapUltis.getBitmapFromAssets(this, pictureName,300, 300);
-        filterBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
-        lastBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
-        photoEditorView.getSource().setImageBitmap(ogBitmap);
-    }
+//    private void loadImage() {
+//        ogBitmap = BitmapUltis.getBitmapFromAssets(this, pictureName,300, 300);
+//        filterBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
+//        lastBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
+//        photoEditorView.getSource().setImageBitmap(ogBitmap);
+//    }
 
     @Override
     public void onBrightnessChanged(int brightness) {
@@ -271,7 +324,35 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
             saveImageToGallery();
             return true;
         }
+        if(id == R.id.camera){
+            openCamera();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openCamera() {
+        Dexter.withActivity(this)
+                .withPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if(report.areAllPermissionsGranted()){
+                            ContentValues values = new ContentValues();
+                            values.put(MediaStore.Images.Media.TITLE, "New Image");
+                            values.put(MediaStore.Images.Media.DESCRIPTION, "Chụp Ảnh Từ Camera");
+                            imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                            Intent cameraIntent =  new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                            startActivityForResult(cameraIntent, PERMISSION_OPEN_CAMERA);
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+
+                    }
+                }).check();
     }
 
     private void saveImageToGallery() {
@@ -360,9 +441,28 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         if (resultCode == RESULT_OK) {
             if(requestCode == PERMISSION_PICK_IMAGE) {
                 Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this, data.getData(), 800, 800);
-                ogBitmap.recycle();
-                lastBitmap.recycle();
-                filterBitmap.recycle();
+
+                imageUri = data.getData();
+//                ogBitmap.recycle();
+//                lastBitmap.recycle();
+//                filterBitmap.recycle();
+                //Xóa bộ nhớ Bitmap
+                ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                lastBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                filterBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                photoEditorView.getSource().setImageBitmap(ogBitmap);
+                bitmap.recycle();
+
+                filterFragment = FilterFragment.getInstance(ogBitmap);
+                filterFragment.setListener(this);
+            }
+            if(requestCode == PERMISSION_OPEN_CAMERA){
+                Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this, imageUri, 800, 800);
+
+                imageUri = data.getData();
+//                ogBitmap.recycle();
+//                lastBitmap.recycle();
+//                filterBitmap.recycle();
                 //Xóa bộ nhớ Bitmap
                 ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 lastBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -377,8 +477,37 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                  Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this,data.getData(),300,300);
                  photoEditor.addImage(bitmap);
             }
+            else if(requestCode == REQUEST_CROP){
+                cropResult(data);
+            }else if(resultCode == UCrop.RESULT_ERROR){
+                cropError(data);
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void cropError(Intent data) {
+        Throwable cropError = UCrop.getError(data);
+        if(cropError!= null){
+            Toast.makeText(CollageActivity.this, "" + cropError.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Toast.makeText(CollageActivity.this, "Lỗi" , Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void cropResult(Intent data) {
+        Uri finalUri = UCrop.getOutput(data);
+        if(finalUri != null){
+            photoEditorView.getSource().setImageURI(finalUri);
+
+            Bitmap bitmap = ((BitmapDrawable) photoEditorView.getSource().getDrawable()).getBitmap();
+            ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+            filterBitmap = ogBitmap;
+            lastBitmap =ogBitmap;
+        }else{
+            Toast.makeText(CollageActivity.this, "Ảnh Không Crop Được", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -417,6 +546,35 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     @Override
     public void onAddedFrame(int frame) {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), frame);
+        photoEditor.addImage(bitmap);
+    }
+    private void setSetwallpaper() {
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) photoEditorView.getSource().getDrawable();
+        bitmapWallpaper1 = bitmapDrawable.getBitmap();
+        GetScreenWidthHeight();
+        SetBitmapSize();
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(CollageActivity.this);
+        try {
+            wallpaperManager.setBitmap(bitmapWallpaper2);
+            wallpaperManager.suggestDesiredDimensions(width, height);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void GetScreenWidthHeight() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        width = photoEditorView.getWidth();
+        height = photoEditorView.getHeight();
+    }
+
+    public void SetBitmapSize() {
+        bitmapWallpaper2 = Bitmap.createScaledBitmap(bitmapWallpaper1, width, height, false);
+    }
+
+    @Override
+    public void onAddedSticker(int sticker) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), sticker);
         photoEditor.addImage(bitmap);
     }
 }
