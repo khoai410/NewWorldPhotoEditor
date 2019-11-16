@@ -32,6 +32,24 @@ public class FrameAdapter extends RecyclerView.Adapter<FrameAdapter.ViewHolder> 
         List<Integer> kq = new ArrayList<>();
 
         kq.add(R.drawable.frame1);
+        kq.add(R.drawable.barak_obama_face);
+        kq.add(R.drawable.batman_mask_picture);
+        kq.add(R.drawable.batman_joker_smile_vector);
+        kq.add(R.drawable.black_electric_guitar_image);
+        kq.add(R.drawable.deadpool_lint_spiderman_barton_face_black);
+        kq.add(R.drawable.deadpool_transparent);
+        kq.add(R.drawable.deadpool_transparent_background);
+        kq.add(R.drawable.ghost_high_quality);
+        kq.add(R.drawable.glasses_image);
+        kq.add(R.drawable.glasses_picture);
+        kq.add(R.drawable.glasses_png_hd);
+        kq.add(R.drawable.love_frame_transparent_picture);
+        kq.add(R.drawable.vladimir_putin_face);
+        kq.add(R.drawable.grunge);
+        kq.add(R.drawable.simple_blue_watercolor_frame);
+
+
+
 
         return kq;
     }

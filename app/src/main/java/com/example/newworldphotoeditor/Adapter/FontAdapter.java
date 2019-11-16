@@ -44,6 +44,25 @@ public class FontAdapter extends RecyclerView.Adapter<FontAdapter.ViewHolder> {
         kq.add("SnackerComic_PerosnalUseOnly.ttf");
         kq.add("Sofia-Regular.otf");
 
+        kq.add("Amsterdam-VwYy.ttf");
+        kq.add("BeautyMountainsPersonalUse-od7z.ttf");
+        kq.add("BiteChocolate-2RGl.ttf");
+        kq.add("BunchBlossomsPersonalUse-0nA4.ttf");
+        kq.add("Calligraphy-D4pm.ttf");
+        kq.add("CalligraphyWet-AX62.ttf");
+        kq.add("CassandraPersonalUseRegular-3BjG.ttf");
+        kq.add("Countryside-YdKj.ttf");
+        kq.add("CountrysideTwo-r9WO.ttf");
+        kq.add("Ginga-2VGe.ttf");
+        kq.add("LemonJellyPersonalUse-dEqR.ttf");
+        kq.add("QuickKissPersonalUse-PxlZ.ttf");
+        kq.add("Sofia-Regular.otf");
+        kq.add("ToySoldiersBold-o9Xa.ttf");
+        kq.add("uniquely Sprayed.ttf");
+        kq.add("VacationsInParadisePersonalUse-qwml.ttf");
+        kq.add("VeganStylePersonalUse-5Y58.ttf");
+        kq.add("Xiomara-Script.ttf");
+
         return kq;
     }
 

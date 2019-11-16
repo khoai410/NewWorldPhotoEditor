@@ -8,13 +8,10 @@
     <!-- <uses-feature -->
     <!-- android:name="android.hardware.camera.autofocus" -->
     <!-- android:required="false" /> -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
-    <uses-permission android:name="android.permission.SET_WALLPAPER"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-feature android:name="android.hardware.camera2" android:required="false"/>
 
     <application
         android:allowBackup="true"
@@ -24,6 +21,7 @@
         android:supportsRtl="true"
         android:screenOrientation="portrait"
         android:theme="@style/AppTheme">
+        <activity android:name=".LoginFacebookActivity"></activity>
         <activity android:name=".CollageActivity"
             android:theme="@style/AppTheme.NoActionBar.FullScreen"
             />
@@ -35,6 +33,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true"></activity>
 
         <activity android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"

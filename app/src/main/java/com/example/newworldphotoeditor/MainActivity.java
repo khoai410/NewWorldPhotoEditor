@@ -20,14 +20,39 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
     private static final int GALLERY_RESULT = 1;
     private static final int CAMERA_RESULT = 2;
+    private static final String FILE_PROVIDER_AUTHORITY = "com.example.newworldphotoeditor";
+    private static final int CAMERA_PERMISSION_CODE = 99;
+    private static final int STORAGE_PERMISSION_CODE = 100;
+    private String mCaptureImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        try {
+//            PackageInfo info = null;
+//            try {
+//                info = getPackageManager().getPackageInfo(
+//                        "com.example.newworldphotoeditor",
+//                        PackageManager.GET_SIGNATURES);
+//            } catch (PackageManager.NameNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//            }
+//        } catch (NoSuchAlgorithmException e) {
+//
+//        }
+
     }
 
     public void onCollage(View view) {
         Intent intent = new Intent(MainActivity.this,CollageActivity.class);
+//        startActivity(intent);
+//        Intent intent = new Intent(MainActivity.this, LoginFacebookActivity.class);
         startActivity(intent);
     }
 
