@@ -3,19 +3,19 @@
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="match_parent">
 
+
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:layout_width="80dp"
+        android:layout_height="80dp"/>
+
     <TextView
         android:id="@+id/filter_name"
         android:text="FILTER NAME"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-
-    <ImageView
-        android:id="@+id/thumbnail"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        android:layout_width="80dp"
-        android:layout_height="80dp"/>
 </LinearLayout>

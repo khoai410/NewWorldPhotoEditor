@@ -2,370 +2,372 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:background="@android:color/white"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/background_dark"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".CollageActivity"
+
     tools:showIn="@layout/activity_collage">
 
     <ja.burhanrashid52.photoeditor.PhotoEditorView
         android:id="@+id/image_preview"
-        android:scaleType="centerCrop"
         android:layout_width="match_parent"
-        android:layout_height="550dp"/>
+        android:layout_height="match_parent"
+        android:layout_above="@+id/progress_horizontal"
+        android:layout_margin="8dp"
+        android:layout_marginBottom="0dp"
+        android:scaleType="centerCrop" />
 
     <HorizontalScrollView
+        android:id="@+id/progress_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/mainColor"
         android:fillViewport="true"
         android:measureAllChildren="false"
-        android:scrollbars="none"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:scrollbars="none">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="1dp">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_filter"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_vertical|center_horizontal"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/cardview_dark_background"
-                app:cardElevation="8dp"
-                android:layout_width="90dp"
-                android:layout_height="90dp">
+                app:cardBackgroundColor="@color/white_color"
 
-              <LinearLayout
-                  android:layout_gravity="center_vertical|center_horizontal"
-                  android:orientation="vertical"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content">
+                app:cardElevation="8dp">
 
-                  <ImageView
-                      android:layout_gravity="center_horizontal"
-                      android:src="@drawable/ic_photo_filter"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical">
 
-                  <TextView
-                      android:textAlignment="center"
-                      android:textStyle="bold"
-                      android:text="Filters"
-                      android:textColor="@android:color/white"
-                      android:textSize="18dp"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"/>
-              </LinearLayout>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@drawable/ic_photo_filter" />
+
+                    <!--                  <TextView-->
+                    <!--                      android:textAlignment="center"-->
+                    <!--                      android:textStyle="bold"-->
+                    <!--                      android:text="Filters"-->
+                    <!--                      android:textColor="@android:color/white"-->
+                    <!--                      android:textSize="18dp"-->
+                    <!--                      android:layout_width="wrap_content"-->
+                    <!--                      android:layout_height="wrap_content"/>-->
+                </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-            android:id="@+id/cv_tune"
-            android:padding="16dp"
-            app:cardBackgroundColor="@color/cardview_dark_background"
-            app:cardElevation="8dp"
-            android:layout_width="90dp"
-            android:layout_height="90dp">
+                android:id="@+id/cv_tune"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:padding="16dp"
+                app:cardBackgroundColor="@color/white_color"
+                app:cardElevation="8dp">
 
-            <LinearLayout
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_gravity="center_horizontal"
-                    android:src="@drawable/ic_tune_white_24dp"
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:textAlignment="center"
-                    android:textStyle="bold"
-                    android:text="Tune"
-                    android:textColor="@android:color/white"
-                    android:textSize="18dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@drawable/ic_tune_white_24dp" />
+
+                    <!--                <TextView-->
+                    <!--                    android:textAlignment="center"-->
+                    <!--                    android:textStyle="bold"-->
+                    <!--                    android:text="Tune"-->
+                    <!--                    android:textColor="@android:color/white"-->
+                    <!--                    android:textSize="18dp"-->
+                    <!--                    android:layout_width="wrap_content"-->
+                    <!--                    android:layout_height="wrap_content"/>-->
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_eraser"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/cardview_dark_background"
-                app:cardElevation="8dp"
-                android:layout_width="90dp"
-                android:layout_height="90dp">
+                app:cardBackgroundColor="@color/white_color"
+                app:cardElevation="8dp">
 
                 <LinearLayout
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:orientation="vertical"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical">
 
                     <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/ic_eraser"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:src="@drawable/ic_eraser" />
 
-                    <TextView
-                        android:textAlignment="center"
-                        android:textStyle="bold"
-                        android:text="Eraser"
-                        android:textColor="@android:color/white"
-                        android:textSize="18dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                    <!--                    <TextView-->
+                    <!--                        android:textAlignment="center"-->
+                    <!--                        android:textStyle="bold"-->
+                    <!--                        android:text="Eraser"-->
+                    <!--                        android:textColor="@android:color/white"-->
+                    <!--                        android:textSize="18dp"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"/>-->
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_brush"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/cardview_dark_background"
-                app:cardElevation="8dp"
-                android:layout_width="90dp"
-                android:layout_height="90dp">
+                app:cardBackgroundColor="@color/white_color"
+                app:cardElevation="8dp">
 
                 <LinearLayout
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:orientation="vertical"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical">
 
                     <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/ic_brush"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:src="@drawable/ic_brush" />
 
-                    <TextView
-                        android:textAlignment="center"
-                        android:textStyle="bold"
-                        android:text="Brush"
-                        android:textColor="@android:color/white"
-                        android:textSize="18dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                    <!--                    <TextView-->
+                    <!--                        android:textAlignment="center"-->
+                    <!--                        android:textStyle="bold"-->
+                    <!--                        android:text="Brush"-->
+                    <!--                        android:textColor="@android:color/white"-->
+                    <!--                        android:textSize="18dp"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"/>-->
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-            android:id="@+id/cv_emoji"
-            android:padding="16dp"
-            app:cardBackgroundColor="@color/cardview_dark_background"
-            app:cardElevation="8dp"
-            android:layout_width="90dp"
-            android:layout_height="90dp">
+                android:id="@+id/cv_emoji"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:padding="16dp"
+                app:cardBackgroundColor="@color/white_color"
+                app:cardElevation="8dp">
 
-            <LinearLayout
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_gravity="center_horizontal"
-                    android:src="@drawable/ic_insert_emoticon_black_24dp"
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:textAlignment="center"
-                    android:textStyle="bold"
-                    android:text="Emoji"
-                    android:textColor="@android:color/white"
-                    android:textSize="18dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@drawable/ic_insert_emoticon_black_24dp" />
+
+                    <!--                <TextView-->
+                    <!--                    android:textAlignment="center"-->
+                    <!--                    android:textStyle="bold"-->
+                    <!--                    android:text="Emoji"-->
+                    <!--                    android:textColor="@android:color/white"-->
+                    <!--                    android:textSize="18dp"-->
+                    <!--                    android:layout_width="wrap_content"-->
+                    <!--                    android:layout_height="wrap_content"/>-->
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_text"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/cardview_dark_background"
-                app:cardElevation="8dp"
-                android:layout_width="90dp"
-                android:layout_height="90dp">
+                app:cardBackgroundColor="@color/white_color"
+                app:cardElevation="8dp">
 
                 <LinearLayout
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:orientation="vertical"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical">
 
                     <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/ic_text_format_black_24dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:src="@drawable/ic_text_format_black_24dp" />
 
-                    <TextView
-                        android:textAlignment="center"
-                        android:textStyle="bold"
-                        android:text="Text"
-                        android:textColor="@android:color/white"
-                        android:textSize="18dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                    <!--                    <TextView-->
+                    <!--                        android:textAlignment="center"-->
+                    <!--                        android:textStyle="bold"-->
+                    <!--                        android:text="Text"-->
+                    <!--                        android:textColor="@android:color/white"-->
+                    <!--                        android:textSize="18dp"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"/>-->
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_image"
-                android:padding="16dp"
-                app:cardBackgroundColor="@color/cardview_dark_background"
-                app:cardElevation="8dp"
-                android:layout_width="90dp"
-                android:layout_height="90dp">
+            <!--            <androidx.cardview.widget.CardView-->
+            <!--                android:id="@+id/cv_image"-->
+            <!--                android:padding="16dp"-->
+            <!--                app:cardBackgroundColor="@color/white_color"-->
+            <!--                app:cardElevation="8dp"-->
+            <!--                android:layout_width="80dp"-->
+            <!--                android:layout_height="50dp">-->
 
-                <LinearLayout
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+            <!--                <LinearLayout-->
+            <!--                    android:layout_gravity="center_vertical|center_horizontal"-->
+            <!--                    android:orientation="vertical"-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content">-->
 
-                    <ImageView
-                        android:layout_gravity="center_horizontal"
-                        android:src="@drawable/ic_image_black_24dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+            <!--                    <ImageView-->
+            <!--                        android:layout_gravity="center_horizontal"-->
+            <!--                        android:src="@drawable/ic_image_black_24dp"-->
+            <!--                        android:layout_width="wrap_content"-->
+            <!--                        android:layout_height="wrap_content"/>-->
 
-                    <TextView
-                        android:textAlignment="center"
-                        android:textStyle="bold"
-                        android:text="Image"
-                        android:textColor="@android:color/white"
-                        android:textSize="18dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            <!--&lt;!&ndash;                    <TextView&ndash;&gt;-->
+            <!--&lt;!&ndash;                        android:textAlignment="center"&ndash;&gt;-->
+            <!--&lt;!&ndash;                        android:textStyle="bold"&ndash;&gt;-->
+            <!--&lt;!&ndash;                        android:text="Image"&ndash;&gt;-->
+            <!--&lt;!&ndash;                        android:textColor="@android:color/white"&ndash;&gt;-->
+            <!--&lt;!&ndash;                        android:textSize="18dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;                        android:layout_width="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;                        android:layout_height="wrap_content"/>&ndash;&gt;-->
+            <!--                </LinearLayout>-->
+            <!--            </androidx.cardview.widget.CardView>-->
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_frame"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/cardview_dark_background"
-                app:cardElevation="8dp"
-                android:layout_width="90dp"
-                android:layout_height="90dp">
+                app:cardBackgroundColor="@color/white_color"
+                app:cardElevation="8dp">
 
                 <LinearLayout
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:orientation="vertical"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical">
 
                     <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/ic_filter_frames_black_24dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:src="@drawable/ic_filter_frames_black_24dp" />
 
-                    <TextView
-                        android:textAlignment="center"
-                        android:textStyle="bold"
-                        android:text="Frames"
-                        android:textColor="@android:color/white"
-                        android:textSize="18dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_crop"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/cardview_dark_background"
-                app:cardElevation="8dp"
-                android:layout_width="90dp"
-                android:layout_height="90dp">
+                app:cardBackgroundColor="@color/white_color"
+                app:cardElevation="8dp">
 
                 <LinearLayout
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:orientation="vertical"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical">
 
                     <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/ic_crop_black_24dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:src="@drawable/ic_crop_black_24dp" />
 
-                    <TextView
-                        android:textAlignment="center"
-                        android:textStyle="bold"
-                        android:text="Crop"
-                        android:textColor="@android:color/white"
-                        android:textSize="18dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                    <!--                    <TextView-->
+                    <!--                        android:textAlignment="center"-->
+                    <!--                        android:textStyle="bold"-->
+                    <!--                        android:text="Crop"-->
+                    <!--                        android:textColor="@android:color/white"-->
+                    <!--                        android:textSize="18dp"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"/>-->
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_sticker"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/cardview_dark_background"
-                app:cardElevation="8dp"
-                android:layout_width="90dp"
-                android:layout_height="90dp">
+                app:cardBackgroundColor="@color/white_color"
+                app:cardElevation="8dp">
 
                 <LinearLayout
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:orientation="vertical"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical">
 
                     <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/ic_star_sticker"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:src="@drawable/ic_star_sticker" />
 
-                    <TextView
-                        android:textAlignment="center"
-                        android:textStyle="bold"
-                        android:text="Sticker"
-                        android:textColor="@android:color/white"
-                        android:textSize="18dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                    <!--                    <TextView-->
+                    <!--                        android:textAlignment="center"-->
+                    <!--                        android:textStyle="bold"-->
+                    <!--                        android:text="Sticker"-->
+                    <!--                        android:textColor="@android:color/white"-->
+                    <!--                        android:textSize="18dp"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"/>-->
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_wallpaper"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/cardview_dark_background"
-                app:cardElevation="8dp"
-                android:layout_width="90dp"
-                android:layout_height="90dp">
+                app:cardBackgroundColor="@color/white_color"
+                app:cardElevation="8dp">
 
                 <LinearLayout
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:orientation="vertical"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical">
 
                     <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/ic_wallpaper_black_24dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:src="@drawable/ic_wallpaper_black_24dp" />
 
-                    <TextView
-                        android:textAlignment="center"
-                        android:textStyle="bold"
-                        android:text="Wallpaper"
-                        android:textColor="@android:color/white"
-                        android:textSize="18dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                    <!--                    <TextView-->
+                    <!--                        android:textAlignment="center"-->
+                    <!--                        android:textStyle="bold"-->
+                    <!--                        android:text="Wallpaper"-->
+                    <!--                        android:textColor="@android:color/white"-->
+                    <!--                        android:textSize="18dp"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"/>-->
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>

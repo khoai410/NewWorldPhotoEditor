@@ -9,6 +9,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.WallpaperManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -18,6 +19,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -62,7 +64,7 @@ import static com.yalantis.ucrop.UCrop.REQUEST_CROP;
 
 public class CollageActivity extends AppCompatActivity implements FiltersListFragmentListener, EditImageFragmentListener, BrushFragmentListener, EmojiFragmentListener,
         TextFragmentListener, FrameFragmentListener, StickerFragmentListener {
-    public static String pictureName ="test.jpg";
+    public static String pictureName ="home.jpg";
     public static final int PERMISSION_PICK_IMAGE = 1000;
     public static final int PERMISSION_ADD_IMAGE = 1001;
     public static final int PERMISSION_OPEN_CAMERA = 1002;
@@ -101,8 +103,8 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Photo Editor");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setTitle("");
 
 
         //View
@@ -112,7 +114,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         cv_eraser = findViewById(R.id.cv_eraser);
         cv_emoji = findViewById(R.id.cv_emoji);
         cv_text = findViewById(R.id.cv_text);
-        cv_image = findViewById(R.id.cv_image);
+//        cv_image = findViewById(R.id.cv_image);
         cv_frame = findViewById(R.id.cv_frame);
         cv_crop = findViewById(R.id.cv_crop);
         cv_sticker = findViewById(R.id.cv_sticker);
@@ -174,13 +176,13 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 textFragment.show(getSupportFragmentManager(),textFragment.getTag());
             }
         });
-        cv_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(CollageActivity.this, "Photo Đã Được Chọn", Toast.LENGTH_SHORT).show();
-                addImageToPhoto();
-            }
-        });
+//        cv_image.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(CollageActivity.this, "Photo Đã Được Chọn", Toast.LENGTH_SHORT).show();
+//                addImageToPhoto();
+//            }
+//        });
         cv_frame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -214,13 +216,14 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
             }
         });
         photoEditorView = findViewById(R.id.image_preview);
+
         photoEditor = new PhotoEditor.Builder(this, photoEditorView)
                     .setPinchTextScalable(true)
                 .setDefaultEmojiTypeface(Typeface.createFromAsset(getAssets(),"emojione-android.ttf"))
                     .build();
         coordinatorLayout = findViewById(R.id.coordinator);
 
-//        loadImage();
+        loadImage();
 
 
 
@@ -231,7 +234,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
 
         UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), fileName)));
 
-        uCrop.start(CollageActivity.this);
+    uCrop.start(CollageActivity.this);
     }
 
     private void addImageToPhoto() {
@@ -254,12 +257,12 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 }).check();
     }
 
-//    private void loadImage() {
-//        ogBitmap = BitmapUltis.getBitmapFromAssets(this, pictureName,300, 300);
-//        filterBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
-//        lastBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
-//        photoEditorView.getSource().setImageBitmap(ogBitmap);
-//    }
+    private void loadImage() {
+        ogBitmap = BitmapUltis.getBitmapFromAssets(this, pictureName,300, 300);
+        filterBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
+        lastBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
+        photoEditorView.getSource().setImageBitmap(ogBitmap);
+    }
 
     @Override
     public void onBrightnessChanged(int brightness) {
@@ -548,6 +551,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), frame);
         photoEditor.addImage(bitmap);
     }
+    @SuppressLint("MissingPermission")
     private void setSetwallpaper() {
         BitmapDrawable bitmapDrawable = (BitmapDrawable) photoEditorView.getSource().getDrawable();
         bitmapWallpaper1 = bitmapDrawable.getBitmap();
