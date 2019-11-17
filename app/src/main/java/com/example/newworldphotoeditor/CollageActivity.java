@@ -1,23 +1,16 @@
 package com.example.newworldphotoeditor;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.viewpager.widget.ViewPager;
-
 import android.Manifest;
 import android.app.WallpaperManager;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -28,7 +21,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.newworldphotoeditor.Adapter.ViewPagerAdapter;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
 import com.example.newworldphotoeditor.Interface.BrushFragmentListener;
 import com.example.newworldphotoeditor.Interface.EditImageFragmentListener;
 import com.example.newworldphotoeditor.Interface.EmojiFragmentListener;
@@ -62,7 +61,7 @@ import static com.yalantis.ucrop.UCrop.REQUEST_CROP;
 
 public class CollageActivity extends AppCompatActivity implements FiltersListFragmentListener, EditImageFragmentListener, BrushFragmentListener, EmojiFragmentListener,
         TextFragmentListener, FrameFragmentListener, StickerFragmentListener {
-    public static String pictureName ="test.jpg";
+    public static String pictureName = "test.jpg";
     public static final int PERMISSION_PICK_IMAGE = 1000;
     public static final int PERMISSION_ADD_IMAGE = 1001;
     public static final int PERMISSION_OPEN_CAMERA = 1002;
@@ -91,9 +90,12 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     Bitmap bitmapWallpaper1, bitmapWallpaper2;
     int width, height;
     Uri imageUri;
+    ExifInterface exifInterface;
+
     static {
         System.loadLibrary("NativeImageProcessor");
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,9 +122,9 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         cv_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(filterFragment != null){
+                if (filterFragment != null) {
                     filterFragment.show(getSupportFragmentManager(), filterFragment.getTag());
-                }else{
+                } else {
                     Toast.makeText(CollageActivity.this, "Filter Đã Được Chọn", Toast.LENGTH_SHORT).show();
                     FilterFragment filterFragment = FilterFragment.getInstance(null);
                     filterFragment.setListener(CollageActivity.this);
@@ -146,14 +148,14 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 photoEditor.setBrushDrawingMode(true);
                 BrushFragment brushFragment = BrushFragment.getInstance();
                 brushFragment.setListener(CollageActivity.this);
-                brushFragment.show(getSupportFragmentManager(),brushFragment.getTag());
+                brushFragment.show(getSupportFragmentManager(), brushFragment.getTag());
             }
         });
         cv_eraser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    Toast.makeText(CollageActivity.this, "Eraser Đã Được Chọn", Toast.LENGTH_SHORT).show();
-                    photoEditor.brushEraser();
+                Toast.makeText(CollageActivity.this, "Eraser Đã Được Chọn", Toast.LENGTH_SHORT).show();
+                photoEditor.brushEraser();
             }
         });
         cv_emoji.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +164,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 Toast.makeText(CollageActivity.this, "Emoji Đã Được Chọn", Toast.LENGTH_LONG).show();
                 EmojiFragment emojiFragment = EmojiFragment.getInstance();
                 emojiFragment.setListener(CollageActivity.this);
-                emojiFragment.show(getSupportFragmentManager(),emojiFragment.getTag());
+                emojiFragment.show(getSupportFragmentManager(), emojiFragment.getTag());
             }
         });
         cv_text.setOnClickListener(new View.OnClickListener() {
@@ -171,7 +173,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 Toast.makeText(CollageActivity.this, "Text Đã Được Chọn", Toast.LENGTH_SHORT).show();
                 TextFragment textFragment = TextFragment.getInstance();
                 textFragment.setListener(CollageActivity.this);
-                textFragment.show(getSupportFragmentManager(),textFragment.getTag());
+                textFragment.show(getSupportFragmentManager(), textFragment.getTag());
             }
         });
         cv_image.setOnClickListener(new View.OnClickListener() {
@@ -187,7 +189,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 Toast.makeText(CollageActivity.this, "Frame Đã Được Chọn", Toast.LENGTH_SHORT).show();
                 FrameFragment frameFragment = FrameFragment.getInstance();
                 frameFragment.setListener(CollageActivity.this);
-                frameFragment.show(getSupportFragmentManager(),frameFragment.getTag());
+                frameFragment.show(getSupportFragmentManager(), frameFragment.getTag());
             }
         });
         cv_crop.setOnClickListener(new View.OnClickListener() {
@@ -203,7 +205,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 Toast.makeText(CollageActivity.this, "Sticker Đã Được Chọn", Toast.LENGTH_SHORT).show();
                 StickerFragment stickerFragment = StickerFragment.getInstance();
                 stickerFragment.setListener(CollageActivity.this);
-                stickerFragment.show(getSupportFragmentManager(),stickerFragment.getTag());
+                stickerFragment.show(getSupportFragmentManager(), stickerFragment.getTag());
             }
         });
         cv_wallpaper.setOnClickListener(new View.OnClickListener() {
@@ -215,13 +217,12 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         });
         photoEditorView = findViewById(R.id.image_preview);
         photoEditor = new PhotoEditor.Builder(this, photoEditorView)
-                    .setPinchTextScalable(true)
-                .setDefaultEmojiTypeface(Typeface.createFromAsset(getAssets(),"emojione-android.ttf"))
-                    .build();
+                .setPinchTextScalable(true)
+                .setDefaultEmojiTypeface(Typeface.createFromAsset(getAssets(), "emojione-android.ttf"))
+                .build();
         coordinatorLayout = findViewById(R.id.coordinator);
 
 //        loadImage();
-
 
 
     }
@@ -240,7 +241,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 .withListener(new MultiplePermissionsListener() {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        if(report.areAllPermissionsGranted()){
+                        if (report.areAllPermissionsGranted()) {
                             Intent intent = new Intent(Intent.ACTION_PICK);
                             intent.setType("image/*");
                             startActivityForResult(intent, PERMISSION_ADD_IMAGE);
@@ -266,7 +267,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         brightness1 = brightness;
         Filter filter = new Filter();
         filter.addSubFilter(new BrightnessSubFilter(brightness));
-        photoEditorView.getSource().setImageBitmap(filter.processFilter(lastBitmap.copy(Bitmap.Config.ARGB_8888,true)));
+        photoEditorView.getSource().setImageBitmap(filter.processFilter(lastBitmap.copy(Bitmap.Config.ARGB_8888, true)));
     }
 
     @Override
@@ -274,7 +275,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         saturation1 = saturation;
         Filter filter = new Filter();
         filter.addSubFilter(new SaturationSubfilter(saturation));
-        photoEditorView.getSource().setImageBitmap(filter.processFilter(lastBitmap.copy(Bitmap.Config.ARGB_8888,true)));
+        photoEditorView.getSource().setImageBitmap(filter.processFilter(lastBitmap.copy(Bitmap.Config.ARGB_8888, true)));
     }
 
     @Override
@@ -282,7 +283,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         constraint1 = constraint;
         Filter filter = new Filter();
         filter.addSubFilter(new ContrastSubFilter(constraint));
-        photoEditorView.getSource().setImageBitmap(filter.processFilter(lastBitmap.copy(Bitmap.Config.ARGB_8888,true)));
+        photoEditorView.getSource().setImageBitmap(filter.processFilter(lastBitmap.copy(Bitmap.Config.ARGB_8888, true)));
     }
 
     @Override
@@ -292,7 +293,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
 
     @Override
     public void onEditCompleted() {
-        Bitmap bitmap = filterBitmap.copy(Bitmap.Config.ARGB_8888,true);
+        Bitmap bitmap = filterBitmap.copy(Bitmap.Config.ARGB_8888, true);
         Filter myFilter = new Filter();
         myFilter.addSubFilter(new BrightnessSubFilter(brightness1));
         myFilter.addSubFilter(new SaturationSubfilter(saturation1));
@@ -303,28 +304,29 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
 
     @Override
     public void onFiltersSelected(Filter filter) {
-        filterBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
+        filterBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888, true);
         photoEditorView.getSource().setImageBitmap(filter.processFilter(filterBitmap));
-        lastBitmap = filterBitmap.copy(Bitmap.Config.ARGB_8888,true);
+        lastBitmap = filterBitmap.copy(Bitmap.Config.ARGB_8888, true);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu,menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.open){
+        if (id == R.id.open) {
             openImageFromGallery();
             return true;
         }
-        if(id == R.id.save){
+        if (id == R.id.save) {
             saveImageToGallery();
             return true;
         }
-        if(id == R.id.camera){
+        if (id == R.id.camera) {
             openCamera();
             return true;
         }
@@ -337,12 +339,12 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 .withListener(new MultiplePermissionsListener() {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        if(report.areAllPermissionsGranted()){
+                        if (report.areAllPermissionsGranted()) {
                             ContentValues values = new ContentValues();
                             values.put(MediaStore.Images.Media.TITLE, "New Image");
                             values.put(MediaStore.Images.Media.DESCRIPTION, "Chụp Ảnh Từ Camera");
                             imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                            Intent cameraIntent =  new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                             startActivityForResult(cameraIntent, PERMISSION_OPEN_CAMERA);
                         }
@@ -361,14 +363,14 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 .withListener(new MultiplePermissionsListener() {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        if(report.areAllPermissionsGranted()){
+                        if (report.areAllPermissionsGranted()) {
                             photoEditor.saveAsBitmap(new OnSaveBitmap() {
                                 @Override
                                 public void onBitmapReady(Bitmap saveBitmap) {
                                     try {
-                                        final String path = BitmapUltis.insertImage(getContentResolver(),saveBitmap,System.currentTimeMillis() + "_profile.jpg",null);
+                                        final String path = BitmapUltis.insertImage(getContentResolver(), saveBitmap, System.currentTimeMillis() + "_profile.jpg", null);
 
-                                        if(!TextUtils.isEmpty(path)){
+                                        if (!TextUtils.isEmpty(path)) {
                                             Snackbar snackbar = Snackbar.make(coordinatorLayout, "Đã Save Vào Thư Viện Ảnh", Snackbar.LENGTH_LONG).setAction("OPEN", new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -376,8 +378,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                                                 }
                                             });
                                             snackbar.show();
-                                        }
-                                        else{
+                                        } else {
                                             Snackbar snackbar = Snackbar.make(coordinatorLayout, "Không Save Được Ảnh Vào Thư Viện Ảnh", Snackbar.LENGTH_LONG);
                                             snackbar.show();
                                         }
@@ -391,9 +392,8 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
 
                                 }
                             });
-                        }
-                        else{
-                            Toast.makeText(CollageActivity.this, "Chưa Cấp Permission",Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(CollageActivity.this, "Chưa Cấp Permission", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -408,7 +408,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     private void openImage(String path) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.parse(path),"image/*");
+        intent.setDataAndType(Uri.parse(path), "image/*");
         startActivity(intent);
     }
 
@@ -419,12 +419,13 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 .withListener(new MultiplePermissionsListener() {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        if(report.areAllPermissionsGranted()){
-                            Intent intent = new Intent(Intent.ACTION_PICK);
+                        if (report.areAllPermissionsGranted()) {
+                            Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             intent.setType("image/*");
-                            startActivityForResult(intent,PERMISSION_PICK_IMAGE);
-                        }else{
-                            Toast.makeText(CollageActivity.this,"Chưa Cấp Quyền",Toast.LENGTH_SHORT).show();
+                            startActivityForResult(intent, PERMISSION_PICK_IMAGE);
+
+                        } else {
+                            Toast.makeText(CollageActivity.this, "Chưa Cấp Quyền", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -439,31 +440,58 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
         if (resultCode == RESULT_OK) {
-            if(requestCode == PERMISSION_PICK_IMAGE) {
+            if (requestCode == PERMISSION_PICK_IMAGE) {
                 Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this, data.getData(), 800, 800);
 
                 imageUri = data.getData();
-//                ogBitmap.recycle();
-//                lastBitmap.recycle();
-//                filterBitmap.recycle();
-                //Xóa bộ nhớ Bitmap
+
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                Cursor cursor = this.getContentResolver().query(imageUri, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String picturePath = cursor.getString(columnIndex);
+                cursor.close();
+
+                ogBitmap = BitmapFactory.decodeFile(picturePath);
+
+                ExifInterface exif = null;
+                try {
+                    File pictureFile = new File(picturePath);
+                    exif = new ExifInterface(pictureFile.getAbsolutePath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                int orientation = ExifInterface.ORIENTATION_NORMAL;
+
+                if (exif != null)
+                    orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+                switch (orientation) {
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        ogBitmap = rotateBitmap(ogBitmap, 90);
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        ogBitmap = rotateBitmap(ogBitmap, 180);
+                        break;
+
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        ogBitmap = rotateBitmap(ogBitmap, 270);
+                        break;
+                }
                 ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 lastBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 filterBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 photoEditorView.getSource().setImageBitmap(ogBitmap);
                 bitmap.recycle();
-
                 filterFragment = FilterFragment.getInstance(ogBitmap);
                 filterFragment.setListener(this);
             }
-            if(requestCode == PERMISSION_OPEN_CAMERA){
+            if (requestCode == PERMISSION_OPEN_CAMERA) {
                 Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this, imageUri, 800, 800);
 
                 imageUri = data.getData();
-//                ogBitmap.recycle();
-//                lastBitmap.recycle();
-//                filterBitmap.recycle();
-                //Xóa bộ nhớ Bitmap
                 ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 lastBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 filterBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -472,14 +500,12 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
 
                 filterFragment = FilterFragment.getInstance(ogBitmap);
                 filterFragment.setListener(this);
-            }
-            else if(requestCode == PERMISSION_ADD_IMAGE){
-                 Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this,data.getData(),300,300);
-                 photoEditor.addImage(bitmap);
-            }
-            else if(requestCode == REQUEST_CROP){
+            } else if (requestCode == PERMISSION_ADD_IMAGE) {
+                Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this, data.getData(), 300, 300);
+                photoEditor.addImage(bitmap);
+            } else if (requestCode == REQUEST_CROP) {
                 cropResult(data);
-            }else if(resultCode == UCrop.RESULT_ERROR){
+            } else if (resultCode == UCrop.RESULT_ERROR) {
                 cropError(data);
             }
         }
@@ -488,24 +514,23 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
 
     private void cropError(Intent data) {
         Throwable cropError = UCrop.getError(data);
-        if(cropError!= null){
+        if (cropError != null) {
             Toast.makeText(CollageActivity.this, "" + cropError.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-        else{
-            Toast.makeText(CollageActivity.this, "Lỗi" , Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(CollageActivity.this, "Lỗi", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void cropResult(Intent data) {
         Uri finalUri = UCrop.getOutput(data);
-        if(finalUri != null){
+        if (finalUri != null) {
             photoEditorView.getSource().setImageURI(finalUri);
 
             Bitmap bitmap = ((BitmapDrawable) photoEditorView.getSource().getDrawable()).getBitmap();
             ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
             filterBitmap = ogBitmap;
-            lastBitmap =ogBitmap;
-        }else{
+            lastBitmap = ogBitmap;
+        } else {
             Toast.makeText(CollageActivity.this, "Ảnh Không Crop Được", Toast.LENGTH_SHORT).show();
         }
     }
@@ -548,6 +573,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), frame);
         photoEditor.addImage(bitmap);
     }
+
     private void setSetwallpaper() {
         BitmapDrawable bitmapDrawable = (BitmapDrawable) photoEditorView.getSource().getDrawable();
         bitmapWallpaper1 = bitmapDrawable.getBitmap();
@@ -561,6 +587,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
             e.printStackTrace();
         }
     }
+
     public void GetScreenWidthHeight() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -576,5 +603,11 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     public void onAddedSticker(int sticker) {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), sticker);
         photoEditor.addImage(bitmap);
+    }
+
+    public static Bitmap rotateBitmap(Bitmap bitmap, int degrees) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degrees);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 }
