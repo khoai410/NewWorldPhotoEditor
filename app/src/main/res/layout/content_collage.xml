@@ -18,7 +18,35 @@
         android:layout_above="@+id/progress_horizontal"
         android:layout_margin="8dp"
         android:layout_marginBottom="0dp"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop" >
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:background="@color/colorAccent"-->
+
+<!--            android:alpha="0.5">-->
+<!--            <ImageView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_gravity="center_horizontal"-->
+<!--                android:src="@drawable/ic_photo_filter" />-->
+<!--            <ImageView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+
+<!--                android:layout_gravity="center_horizontal"-->
+<!--                android:src="@drawable/ic_photo_filter" />-->
+<!--            <ImageView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+
+<!--                android:layout_gravity="center_horizontal"-->
+<!--                android:src="@drawable/ic_photo_filter" />-->
+<!--        </LinearLayout>-->
+    </ja.burhanrashid52.photoeditor.PhotoEditorView>
 
     <HorizontalScrollView
         android:id="@+id/progress_horizontal"
@@ -42,7 +70,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center_vertical|center_horizontal"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/white_color"
+                app:cardBackgroundColor="@color/mainColor"
 
                 app:cardElevation="8dp">
 
@@ -74,7 +102,7 @@
                 android:layout_width="80dp"
                 android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/white_color"
+                app:cardBackgroundColor="@color/mainColor"
                 app:cardElevation="8dp">
 
                 <LinearLayout
@@ -105,7 +133,7 @@
                 android:layout_width="80dp"
                 android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/white_color"
+                app:cardBackgroundColor="@color/mainColor"
                 app:cardElevation="8dp">
 
                 <LinearLayout
@@ -136,7 +164,7 @@
                 android:layout_width="80dp"
                 android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/white_color"
+                app:cardBackgroundColor="@color/mainColor"
                 app:cardElevation="8dp">
 
                 <LinearLayout
@@ -167,7 +195,7 @@
                 android:layout_width="80dp"
                 android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/white_color"
+                app:cardBackgroundColor="@color/mainColor"
                 app:cardElevation="8dp">
 
                 <LinearLayout
@@ -198,7 +226,7 @@
                 android:layout_width="80dp"
                 android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/white_color"
+                app:cardBackgroundColor="@color/mainColor"
                 app:cardElevation="8dp">
 
                 <LinearLayout
@@ -260,7 +288,7 @@
                 android:layout_width="80dp"
                 android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/white_color"
+                app:cardBackgroundColor="@color/mainColor"
                 app:cardElevation="8dp">
 
                 <LinearLayout
@@ -283,7 +311,7 @@
                 android:layout_width="80dp"
                 android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/white_color"
+                app:cardBackgroundColor="@color/mainColor"
                 app:cardElevation="8dp">
 
                 <LinearLayout
@@ -314,7 +342,7 @@
                 android:layout_width="80dp"
                 android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/white_color"
+                app:cardBackgroundColor="@color/mainColor"
                 app:cardElevation="8dp">
 
                 <LinearLayout
@@ -345,7 +373,7 @@
                 android:layout_width="80dp"
                 android:layout_height="50dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/white_color"
+                app:cardBackgroundColor="@color/mainColor"
                 app:cardElevation="8dp">
 
                 <LinearLayout
