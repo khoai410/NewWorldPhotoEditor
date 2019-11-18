@@ -104,9 +104,8 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Photo Editor");
-
-
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         //View
         cv_filter = findViewById(R.id.cv_filter);
         cv_tune = findViewById(R.id.cv_tune);
@@ -320,6 +319,11 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         int id = item.getItemId();
         if (id == R.id.open) {
             openImageFromGallery();
+            return true;
+        }
+        if (id == R.id.share) {
+            Intent intent = new Intent(CollageActivity.this, LoginFacebookActivity.class);
+            startActivity(intent);
             return true;
         }
         if (id == R.id.save) {
@@ -610,4 +614,6 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         matrix.postRotate(degrees);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
+
+
 }

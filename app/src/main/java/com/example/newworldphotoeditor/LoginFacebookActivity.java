@@ -17,10 +17,13 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
@@ -31,23 +34,28 @@ public class LoginFacebookActivity extends AppCompatActivity {
     private TextView txtUsernameFacebook;
     private LoginButton btnLoginFacebook;
     private CallbackManager callbackManager;
+    String name;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
-        callbackManager=CallbackManager.Factory.create();
+        callbackManager = CallbackManager.Factory.create();
 
         setContentView(R.layout.activity_login_facebook);
         init();
-        btnLoginFacebook.setReadPermissions(Arrays.asList("public_profile","email"));
+        btnLoginFacebook.setReadPermissions(Arrays.asList("public_profile", "email"));
         onLoginFacebook();
     }
-    public void onLoginFacebook(){
+
+    public void onLoginFacebook() {
         btnLoginFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                btnLoginFacebook.setVisibility(View.INVISIBLE);
+                txtUsernameFacebook.setVisibility(View.VISIBLE);
                 result();
-btnLoginFacebook.setVisibility(View.INVISIBLE);
+
             }
 
             @Override
@@ -62,23 +70,46 @@ btnLoginFacebook.setVisibility(View.INVISIBLE);
         });
     }
 
+    @Override
+    protected void onStart() {
+        LoginManager.getInstance().logOut();
+        super.onStart();
+    }
+
     private void result() {
-        GraphRequest graphRequest=GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+        GraphRequest graphRequest = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
-                Log.e("JSON",response.getJSONObject().toString());
+                Log.e("JSON", response.getJSONObject().toString());
+                try {
+                    name = object.getString("name");
+                    friendProfilePicture.setProfileId(Profile.getCurrentProfile().getId());
+                    txtUsernameFacebook.setText(name);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
-        Bundle params=new Bundle();
-        params.putString("Halu","name");
+        Bundle params = new Bundle();
+        params.putString("fields", "name");
         graphRequest.setParameters(params);
         graphRequest.executeAsync();
     }
 
-    public void init(){
+    public void init() {
         friendProfilePicture = (ProfilePictureView) findViewById(R.id.friendProfilePicture);
         txtUsernameFacebook = (TextView) findViewById(R.id.txt_username_facebook);
         btnLoginFacebook = (LoginButton) findViewById(R.id.btn_login_facebook);
+        onLogout();
+    }
+
+    private void onLogout() {
+        LoginManager.getInstance().logOut();
+        txtUsernameFacebook.setText("");
+        friendProfilePicture.setProfileId(null);
+
+
     }
 
     @Override
