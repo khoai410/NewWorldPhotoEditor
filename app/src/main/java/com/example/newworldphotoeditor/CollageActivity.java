@@ -104,9 +104,8 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Photo Editor");
-
-
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         //View
         cv_filter = findViewById(R.id.cv_filter);
         cv_tune = findViewById(R.id.cv_tune);
@@ -114,7 +113,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         cv_eraser = findViewById(R.id.cv_eraser);
         cv_emoji = findViewById(R.id.cv_emoji);
         cv_text = findViewById(R.id.cv_text);
-        cv_image = findViewById(R.id.cv_image);
+//        cv_image = findViewById(R.id.cv_image);
         cv_frame = findViewById(R.id.cv_frame);
         cv_crop = findViewById(R.id.cv_crop);
         cv_sticker = findViewById(R.id.cv_sticker);
@@ -176,13 +175,13 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 textFragment.show(getSupportFragmentManager(), textFragment.getTag());
             }
         });
-        cv_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(CollageActivity.this, "Photo Đã Được Chọn", Toast.LENGTH_SHORT).show();
-                addImageToPhoto();
-            }
-        });
+//        cv_image.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(CollageActivity.this, "Photo Đã Được Chọn", Toast.LENGTH_SHORT).show();
+//                addImageToPhoto();
+//            }
+//        });
         cv_frame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -320,6 +319,11 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         int id = item.getItemId();
         if (id == R.id.open) {
             openImageFromGallery();
+            return true;
+        }
+        if (id == R.id.share) {
+            Intent intent = new Intent(CollageActivity.this, LoginFacebookActivity.class);
+            startActivity(intent);
             return true;
         }
         if (id == R.id.save) {
@@ -610,4 +614,6 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         matrix.postRotate(degrees);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
+
+
 }

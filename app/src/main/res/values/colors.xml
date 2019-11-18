@@ -2,11 +2,28 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#FF2D55</color>
     <color name="mainColor">#FCA8B0</color>
     <color name="white_color">#fff</color>
     <color name="tool_bg">#151414</color>
-    <color name="filter_color_selected">#221f20</color>
-    <color name="filter_color_unselected">#8a8889</color>
+    <color name="filter_color_selected">#FF2D55</color>
+    <color name="filter_color_unselected">#8C8C8C</color>
     <color name="color_option_menu">#FF3990</color>
+    <color name="ucrop_color_toolbar">#FCA8B0</color>
+    <color name="ucrop_color_statusbar">#FCA8B0</color>
+    <color name="ucrop_color_toolbar_widget">#fff</color>
+
+    <color name="ucrop_color_widget_active">#FF2D55</color>
+    <color name="ucrop_color_active_controls_color">#FF2D55</color>
+    <color name="ucrop_color_widget_rotate_mid_line">#FCA8B0</color>
+    <color name="ucrop_color_widget_background">#FCA8B0</color>
+    <color name="ucrop_frame_corners_color">#FF2D55</color>
+    <color name="ucrop_show_frame">#FF2D55</color>
+    <color name="ucrop_frame_color">#FFF</color>
+    <color name="ucrop_color_blaze_orange">#FF2D55</color>
+    <color name="ucrop_color_ebony_clay">#20242F</color>
+    <color name="ucrop_color_default_crop_frame">#FCA8B0</color>
+    <color name="ucrop_color_default_crop_grid">#FCA8B0</color>
+    <color name="ucrop_color_heather">#FFF</color>
+
 </resources>

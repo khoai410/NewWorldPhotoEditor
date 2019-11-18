@@ -6,6 +6,8 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.newworldphotoeditor.Adapter.ColorAdapter;
 import com.example.newworldphotoeditor.Adapter.FontAdapter;
@@ -36,7 +39,7 @@ public class TextFragment extends BottomSheetDialogFragment implements ColorList
     EditText edtText;
     RecyclerView rvColor;
     RecyclerView rvFont;
-    Button btnConfirm;
+    TextView btnConfirm;
 
     Typeface typeface = Typeface.DEFAULT;
 

@@ -7,6 +7,11 @@
     android:layout_centerHorizontal="true"
     android:layout_height="match_parent"
     tools:context=".LoginFacebookActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/mainColor"
+        />
     <com.facebook.login.widget.ProfilePictureView
 
         android:layout_gravity="center"
@@ -19,6 +24,10 @@
     <TextView
         android:id="@+id/txt_username_facebook"
         android:layout_width="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="20dp"
+        android:textColor="@color/mainColor"
+        android:layout_gravity="center"
         android:layout_height="wrap_content"/>
     <com.facebook.login.widget.LoginButton
         android:id="@+id/btn_login_facebook"
@@ -27,9 +36,13 @@
         android:layout_gravity="center"
         android:layout_height="wrap_content"/>
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="160dp"
         android:layout_height="40dp"
+        android:layout_marginTop="32dp"
         android:layout_gravity="center"
+        android:paddingHorizontal="8dp"
+        android:textColor="@color/white_color"
+        android:background="@color/colorAccent"
         android:text="ĐĂNG XUẤT"
         />
 </androidx.appcompat.widget.LinearLayoutCompat>

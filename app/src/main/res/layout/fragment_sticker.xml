@@ -3,12 +3,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FrameFragment">
+    tools:context=".FrameFragment"
+    android:padding="16dp"
+    >
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+
+        android:id="@+id/sticker_tab"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change"
+            android:id="@+id/btnApply"
+            android:layout_weight="1"
+            />
+        <TextView
+            android:layout_weight="1"
+            android:textAlignment="textEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Done"
+            android:textColor="@color/colorAccent"
+            android:textSize="17dp"
+            />
+    </LinearLayout>
+    <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
+        android:layout_below="@+id/sticker_tab"
         android:layout_height="wrap_content">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -16,11 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <Button
-            android:id="@+id/btnApply"
-            android:text="Confirm Sticker To Image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+
     </LinearLayout>
 
 </RelativeLayout>

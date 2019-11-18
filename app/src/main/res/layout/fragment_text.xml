@@ -4,9 +4,30 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".TextFragment">
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:orientation="horizontal"
+    >
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Change"
+            android:id="@+id/btnConfirm"
+    android:layout_weight="1"
+      />
+    <TextView
+        android:layout_weight="1"
+        android:textAlignment="textEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:textColor="@color/colorAccent"
+        android:textSize="17dp"
+        />
+</LinearLayout>
     <!-- TODO: Update blank fragment layout -->
     <EditText
         android:id="@+id/edtText"
@@ -28,13 +49,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvColor"
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="60dp">
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <Button
-        android:id="@+id/btnConfirm"
-        android:text="Confirm Text To Image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+<!--    <Button-->
+<!--        android:id="@+id/btnConfirm"-->
+<!--        android:text="Confirm Text To Image"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"/>-->
 </LinearLayout>
