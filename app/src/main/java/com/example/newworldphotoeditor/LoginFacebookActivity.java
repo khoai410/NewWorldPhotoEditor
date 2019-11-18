@@ -2,6 +2,7 @@ package com.example.newworldphotoeditor;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import com.facebook.login.widget.ProfilePictureView;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class LoginFacebookActivity extends AppCompatActivity {

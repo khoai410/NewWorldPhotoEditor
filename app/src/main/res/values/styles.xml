@@ -3,8 +3,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/mainColor</item>
+        <item name="colorPrimaryDark">@color/mainColor</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
@@ -19,6 +19,19 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:actionMenuTextColor">@color/color_option_menu</item>
     </style>
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light"     >
+        <item name="colorPrimaryDark">@color/mainColor</item>
+    </style>
+    <style name="MyDialog" parent="@android:style/Theme.Dialog" >
+        <item name="android:windowFrame">@color/mainColor</item>
+        <item name="android:windowBackground">@color/colorAccent</item>
+        <item name="android:windowIsFloating">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTitleStyle">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:gravity">center</item>
+    </style>
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 </resources>

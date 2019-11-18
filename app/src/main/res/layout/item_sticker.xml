@@ -5,6 +5,7 @@
     android:layout_height="100dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="8dp"
+
     app:cardUseCompatPadding="true">
 
     <FrameLayout
