@@ -7,30 +7,28 @@
     tools:context=".FrameFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-
         android:id="@+id/frame_tab"
-        android:orientation="horizontal"
         >
-        <TextView
+        <ImageView
+            android:src="@drawable/ic_close_black_24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Change"
-            android:id="@+id/btnOK"
-            android:layout_weight="1"
+            android:text="Close"
+            android:id="@+id/imgClose"
             />
-        <TextView
-            android:layout_weight="1"
-            android:textAlignment="textEnd"
+
+        <ImageView
+            android:id="@+id/imgDone"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Done"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_check_black_24dp"
             android:textColor="@color/colorAccent"
-            android:textSize="17dp"
-            />
-    </LinearLayout>
+            android:textSize="17dp" />
+    </RelativeLayout>
     <LinearLayout
         android:orientation="vertical"
         android:layout_below="@+id/frame_tab"

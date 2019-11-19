@@ -1,7 +1,7 @@
 <resources>
     <string name="facebook_app_id">426777011584324</string>
     <string name="fb_login_protocol_scheme">fb426777011584324</string>
-    <string name="app_name">New World Photo Editor</string>
+    <string name="app_name">New World</string>
     <string name="slogan">New World Photo Editor app bring to user a whole new world of photo with many effects and more... ! </string>
 
     <!-- TODO: Remove or change this placeholder text -->

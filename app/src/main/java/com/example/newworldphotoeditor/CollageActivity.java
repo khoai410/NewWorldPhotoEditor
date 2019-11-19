@@ -113,7 +113,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         cv_eraser = findViewById(R.id.cv_eraser);
         cv_emoji = findViewById(R.id.cv_emoji);
         cv_text = findViewById(R.id.cv_text);
-//        cv_image = findViewById(R.id.cv_image);
+        cv_image = findViewById(R.id.cv_image);
         cv_frame = findViewById(R.id.cv_frame);
         cv_crop = findViewById(R.id.cv_crop);
         cv_sticker = findViewById(R.id.cv_sticker);
@@ -175,13 +175,13 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 textFragment.show(getSupportFragmentManager(), textFragment.getTag());
             }
         });
-//        cv_image.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(CollageActivity.this, "Photo Đã Được Chọn", Toast.LENGTH_SHORT).show();
-//                addImageToPhoto();
-//            }
-//        });
+        cv_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(CollageActivity.this, "Photo Đã Được Chọn", Toast.LENGTH_SHORT).show();
+                addImageToPhoto();
+            }
+        });
         cv_frame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -334,6 +334,12 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
             openCamera();
             return true;
         }
+        if(id == R.id.pre){
+            photoEditor.undo();
+        }
+        if(id == R.id.next){
+            photoEditor.redo();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -449,41 +455,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
 
                 imageUri = data.getData();
 
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                Cursor cursor = this.getContentResolver().query(imageUri, filePathColumn, null, null, null);
-                cursor.moveToFirst();
-
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String picturePath = cursor.getString(columnIndex);
-                cursor.close();
-
-                ogBitmap = BitmapFactory.decodeFile(picturePath);
-
-                ExifInterface exif = null;
-                try {
-                    File pictureFile = new File(picturePath);
-                    exif = new ExifInterface(pictureFile.getAbsolutePath());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                int orientation = ExifInterface.ORIENTATION_NORMAL;
-
-                if (exif != null)
-                    orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-
-                switch (orientation) {
-                    case ExifInterface.ORIENTATION_ROTATE_90:
-                        ogBitmap = rotateBitmap(ogBitmap, 90);
-                        break;
-                    case ExifInterface.ORIENTATION_ROTATE_180:
-                        ogBitmap = rotateBitmap(ogBitmap, 180);
-                        break;
-
-                    case ExifInterface.ORIENTATION_ROTATE_270:
-                        ogBitmap = rotateBitmap(ogBitmap, 270);
-                        break;
-                }
+                ImageRotated();
                 ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 lastBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 filterBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -494,8 +466,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
             }
             if (requestCode == PERMISSION_OPEN_CAMERA) {
                 Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this, imageUri, 800, 800);
-
-                imageUri = data.getData();
+                ImageRotated();
                 ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 lastBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 filterBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -507,6 +478,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
             } else if (requestCode == PERMISSION_ADD_IMAGE) {
                 Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this, data.getData(), 300, 300);
                 photoEditor.addImage(bitmap);
+
             } else if (requestCode == REQUEST_CROP) {
                 cropResult(data);
             } else if (resultCode == UCrop.RESULT_ERROR) {
@@ -613,6 +585,48 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         Matrix matrix = new Matrix();
         matrix.postRotate(degrees);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+    public void ImageRotated(){
+        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+        Cursor cursor = this.getContentResolver().query(imageUri, filePathColumn, null, null, null);
+        cursor.moveToFirst();
+
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String picturePath = cursor.getString(columnIndex);
+        cursor.close();
+
+        ogBitmap = BitmapFactory.decodeFile(picturePath);
+
+        ExifInterface exif = null;
+        try {
+            File pictureFile = new File(picturePath);
+            exif = new ExifInterface(pictureFile.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int orientation = ExifInterface.ORIENTATION_NORMAL;
+
+        if (exif != null)
+            orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                ogBitmap = rotateBitmap(ogBitmap, 90);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                ogBitmap = rotateBitmap(ogBitmap, 180);
+                break;
+
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                ogBitmap = rotateBitmap(ogBitmap, 270);
+                break;
+        }
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
 
