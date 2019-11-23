@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.newworldphotoeditor.Adapter.ColorAdapter;
 import com.example.newworldphotoeditor.Adapter.FrameAdapter;
@@ -25,7 +26,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 public class FrameFragment extends BottomSheetDialogFragment implements FrameListener {
 
     RecyclerView rvFrame;
-    Button btnOK;
+    TextView btnOK;
 
     int framePicked = -1;
 

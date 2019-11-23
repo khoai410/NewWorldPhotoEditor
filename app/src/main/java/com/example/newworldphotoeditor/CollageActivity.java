@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -323,6 +324,8 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         }
         if (id == R.id.share) {
             Intent intent = new Intent(CollageActivity.this, LoginFacebookActivity.class);
+            intent.putExtra("shareImage",String.valueOf(imageUri));
+            Log.e("imageUri", String.valueOf(imageUri));
             startActivity(intent);
             return true;
         }
