@@ -54,6 +54,10 @@
         <activity android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <provider android:authorities="com.facebook.app.FacebookContentProvider426777011584324"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true">
+        </provider>
     </application>
 
 </manifest>
