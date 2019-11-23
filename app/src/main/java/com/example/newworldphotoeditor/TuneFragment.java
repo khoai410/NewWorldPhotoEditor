@@ -2,14 +2,14 @@ package com.example.newworldphotoeditor;
 
 
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.example.newworldphotoeditor.Interface.EditImageFragmentListener;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -109,5 +109,16 @@ public class TuneFragment extends BottomSheetDialogFragment implements SeekBar.O
         seekBar_brightness.setProgress(100);
         seekBar_constraint.setProgress(0);
         seekBar_saturation.setProgress(10);
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
     }
 }

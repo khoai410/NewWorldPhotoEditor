@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.WallpaperManager;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -62,7 +61,7 @@ import static com.yalantis.ucrop.UCrop.REQUEST_CROP;
 
 public class CollageActivity extends AppCompatActivity implements FiltersListFragmentListener, EditImageFragmentListener, BrushFragmentListener, EmojiFragmentListener,
         TextFragmentListener, FrameFragmentListener, StickerFragmentListener {
-    public static String pictureName = "test.jpg";
+    public static String pictureName = "home.jpg";
     public static final int PERMISSION_PICK_IMAGE = 1000;
     public static final int PERMISSION_ADD_IMAGE = 1001;
     public static final int PERMISSION_OPEN_CAMERA = 1002;
@@ -213,6 +212,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
             public void onClick(View v) {
                 setSetwallpaper();
                 Toast.makeText(CollageActivity.this, "Đã Set Được Wallpaper", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
         photoEditorView = findViewById(R.id.image_preview);
@@ -222,7 +222,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 .build();
         coordinatorLayout = findViewById(R.id.coordinator);
 
-//        loadImage();
+        loadImage();
 
 
     }
@@ -255,12 +255,12 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 }).check();
     }
 
-//    private void loadImage() {
-//        ogBitmap = BitmapUltis.getBitmapFromAssets(this, pictureName,300, 300);
-//        filterBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
-//        lastBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
-//        photoEditorView.getSource().setImageBitmap(ogBitmap);
-//    }
+    private void loadImage() {
+        ogBitmap = BitmapUltis.getBitmapFromAssets(this, pictureName,300, 300);
+        filterBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
+        lastBitmap = ogBitmap.copy(Bitmap.Config.ARGB_8888,true);
+        photoEditorView.getSource().setImageBitmap(ogBitmap);
+    }
 
     @Override
     public void onBrightnessChanged(int brightness) {
@@ -457,8 +457,9 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
                 Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this, data.getData(), 800, 800);
 
                 imageUri = data.getData();
-
-                ImageRotated();
+//                ogBitmap.recycle();
+//                filterBitmap.recycle();
+//                lastBitmap.recycle();
                 ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 lastBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 filterBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -469,7 +470,6 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
             }
             if (requestCode == PERMISSION_OPEN_CAMERA) {
                 Bitmap bitmap = BitmapUltis.getBitmapFromGallery(this, imageUri, 800, 800);
-                ImageRotated();
                 ogBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 lastBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 filterBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -540,6 +540,7 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
     @Override
     public void onEmojiSelected(String emoji) {
         photoEditor.addEmoji(emoji);
+        EmojiFragment.getInstance().dismiss();
     }
 
     @Override
@@ -589,48 +590,10 @@ public class CollageActivity extends AppCompatActivity implements FiltersListFra
         matrix.postRotate(degrees);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
-    public void ImageRotated(){
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        Cursor cursor = this.getContentResolver().query(imageUri, filePathColumn, null, null, null);
-        cursor.moveToFirst();
 
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        String picturePath = cursor.getString(columnIndex);
-        cursor.close();
-
-        ogBitmap = BitmapFactory.decodeFile(picturePath);
-
-        ExifInterface exif = null;
-        try {
-            File pictureFile = new File(picturePath);
-            exif = new ExifInterface(pictureFile.getAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        int orientation = ExifInterface.ORIENTATION_NORMAL;
-
-        if (exif != null)
-            orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-
-        switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                ogBitmap = rotateBitmap(ogBitmap, 90);
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                ogBitmap = rotateBitmap(ogBitmap, 180);
-                break;
-
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                ogBitmap = rotateBitmap(ogBitmap, 270);
-                break;
-        }
-    }
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
-
-
 }

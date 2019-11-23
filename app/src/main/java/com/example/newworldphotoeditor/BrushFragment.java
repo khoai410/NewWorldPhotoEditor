@@ -1,28 +1,21 @@
 package com.example.newworldphotoeditor;
 
 
-import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.ToggleButton;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newworldphotoeditor.Adapter.ColorAdapter;
 import com.example.newworldphotoeditor.Interface.BrushFragmentListener;
 import com.example.newworldphotoeditor.Interface.ColorListener;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -108,5 +101,17 @@ public class BrushFragment extends BottomSheetDialogFragment implements ColorLis
     @Override
     public void onColorPicked(int color) {
         listener.onBrushColorChangedListener(color);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
     }
 }

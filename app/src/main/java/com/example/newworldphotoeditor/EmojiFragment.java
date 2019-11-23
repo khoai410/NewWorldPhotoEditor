@@ -2,14 +2,14 @@ package com.example.newworldphotoeditor;
 
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newworldphotoeditor.Adapter.EmojiAdapter;
 import com.example.newworldphotoeditor.Interface.EmojiFragmentListener;
@@ -58,5 +58,17 @@ public class EmojiFragment extends BottomSheetDialogFragment implements EmojiLis
     @Override
     public void onEmojiItemPicked(String emoji) {
         listener.onEmojiSelected(emoji);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
     }
 }
