@@ -2,18 +2,17 @@ package com.example.newworldphotoeditor;
 
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ImageView;
 
-import com.example.newworldphotoeditor.Adapter.ColorAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.newworldphotoeditor.Adapter.FrameAdapter;
 import com.example.newworldphotoeditor.Interface.FrameFragmentListener;
 import com.example.newworldphotoeditor.Interface.FrameListener;
@@ -26,7 +25,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 public class FrameFragment extends BottomSheetDialogFragment implements FrameListener {
 
     RecyclerView rvFrame;
-    TextView btnOK;
+    ImageView imgClose;
+    ImageView imgDone;
 
     int framePicked = -1;
 
@@ -54,16 +54,24 @@ public class FrameFragment extends BottomSheetDialogFragment implements FrameLis
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_frame, container, false);
         rvFrame = view.findViewById(R.id.rvFrame);
-        btnOK = view.findViewById(R.id.btnOK);
+        imgClose = view.findViewById(R.id.imgClose);
+        imgDone = view.findViewById(R.id.imgDone);
         rvFrame.setHasFixedSize(true);
         rvFrame.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         FrameAdapter frameAdapter = new FrameAdapter(getContext(), this);
         rvFrame.setAdapter(frameAdapter);
 
-        btnOK.setOnClickListener(new View.OnClickListener() {
+        imgDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onAddedFrame(framePicked);
+                getFragmentManager().beginTransaction().remove(FrameFragment.this).commit();
+            }
+        });
+        imgClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().beginTransaction().remove(FrameFragment.this).commit();
             }
         });
         return view;

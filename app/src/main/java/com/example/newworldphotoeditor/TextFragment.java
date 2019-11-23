@@ -4,20 +4,15 @@ package com.example.newworldphotoeditor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.ImageView;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newworldphotoeditor.Adapter.ColorAdapter;
 import com.example.newworldphotoeditor.Adapter.FontAdapter;
@@ -39,7 +34,8 @@ public class TextFragment extends BottomSheetDialogFragment implements ColorList
     EditText edtText;
     RecyclerView rvColor;
     RecyclerView rvFont;
-    TextView btnConfirm;
+    ImageView imgClose;
+    ImageView imgDone;
 
     Typeface typeface = Typeface.DEFAULT;
 
@@ -67,7 +63,8 @@ public class TextFragment extends BottomSheetDialogFragment implements ColorList
         edtText = view.findViewById(R.id.edtText);
         rvColor = view.findViewById(R.id.rvColor);
         rvFont = view.findViewById(R.id.rvFont);
-        btnConfirm = view.findViewById(R.id.btnConfirm);
+        imgClose = view.findViewById(R.id.imgClose);
+        imgDone = view.findViewById(R.id.imgDone);
 
         rvColor.setHasFixedSize(true);
         rvColor.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -79,10 +76,16 @@ public class TextFragment extends BottomSheetDialogFragment implements ColorList
         FontAdapter fontAdapter = new FontAdapter(getContext(), this);
         rvFont.setAdapter(fontAdapter);
 
-        btnConfirm.setOnClickListener(new View.OnClickListener() {
+        imgDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onTextChanged(typeface, edtText.getText().toString(), colorDefault);
+                getFragmentManager().beginTransaction().remove(TextFragment.this).commit();
+            }
+        });
+        imgClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 getFragmentManager().beginTransaction().remove(TextFragment.this).commit();
             }
         });

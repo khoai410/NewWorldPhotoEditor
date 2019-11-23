@@ -36,8 +36,8 @@ public class FrameAdapter extends RecyclerView.Adapter<FrameAdapter.ViewHolder> 
         kq.add(R.drawable.batman_mask_picture);
         kq.add(R.drawable.batman_joker_smile_vector);
         kq.add(R.drawable.black_electric_guitar_image);
-        kq.add(R.drawable.deadpool_lint_spiderman_barton_face_black);
-        kq.add(R.drawable.deadpool_transparent);
+//        kq.add(R.drawable.deadpool_lint_spiderman_barton_face_black);
+//        kq.add(R.drawable.deadpool_transparent);
         kq.add(R.drawable.deadpool_transparent_background);
         kq.add(R.drawable.ghost_high_quality);
         kq.add(R.drawable.glasses_image);
